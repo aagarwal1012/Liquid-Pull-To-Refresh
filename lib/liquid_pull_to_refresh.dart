@@ -1,8 +1,11 @@
 library liquid_pull_to_refresh;
 
 import 'package:flutter/material.dart';
-/// A Calculator.
-class Calculator extends RefreshIndicator{
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
+
+class LiquidPullToRefresh extends RefreshIndicator {
+  const LiquidPullToRefresh({
+    Key key,
+    Widget child,
+    RefreshCallback onRefresh,
+  }) : super(key: key, child: child, onRefresh: onRefresh);
 }
