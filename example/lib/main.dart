@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,13 +13,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'LiquidPullToRefresh'),
-
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
@@ -28,15 +27,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-      )
+      body: LiquidPullToRefresh(
+        child: ListView(),
+        onRefresh: (){},
+      ),
     );
   }
 }
