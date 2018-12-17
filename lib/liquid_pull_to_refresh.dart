@@ -40,34 +40,70 @@ enum _RefreshIndicatorMode {
   canceled, // Animating the indicator's fade-out after not arming.
 }
 
-class LiquidPullToRefresh extends RefreshIndicator {
+class LiquidPullToRefresh extends StatefulWidget {
   const LiquidPullToRefresh({
     Key key,
-    @required Widget child,
-    double displacement = 40.0,
-    @required RefreshCallback onRefresh,
-    Color color,
-    Color backgroundColor,
-    ScrollNotificationPredicate notificationPredicate =
-        defaultScrollNotificationPredicate,
-    String semanticsLabel,
-    String semanticsValue,
-  }) : super(
-          key: key,
-          child: child,
-          displacement: displacement,
-          onRefresh: onRefresh,
-          color: color,
-          notificationPredicate: notificationPredicate,
-          semanticsLabel: semanticsLabel,
-          semanticsValue: semanticsValue,
-        );
+    @required this.child,
+    this.displacement = 40.0,
+    @required this.onRefresh,
+    this.color,
+    this.backgroundColor,
+    this.notificationPredicate = defaultScrollNotificationPredicate,
+    this.semanticsLabel,
+    this.semanticsValue,
+  })  : assert(child != null),
+        assert(onRefresh != null),
+        assert(notificationPredicate != null),
+        super(key: key);
+
+  /// The widget below this widget in the tree.
+  ///
+  /// The refresh indicator will be stacked on top of this child. The indicator
+  /// will appear when child's Scrollable descendant is over-scrolled.
+  ///
+  /// Typically a [ListView] or [CustomScrollView].
+  final ScrollView child;
+
+  /// The distance from the child's top or bottom edge to where the refresh
+  /// indicator will settle. During the drag that exposes the refresh indicator,
+  /// its actual displacement may significantly exceed this value.
+  final double displacement;
+
+  /// A function that's called when the user has dragged the refresh indicator
+  /// far enough to demonstrate that they want the app to refresh. The returned
+  /// [Future] must complete when the refresh operation is finished.
+  final RefreshCallback onRefresh;
+
+  /// The progress indicator's foreground color. The current theme's
+  /// [ThemeData.accentColor] by default.
+  final Color color;
+
+  /// The progress indicator's background color. The current theme's
+  /// [ThemeData.canvasColor] by default.
+  final Color backgroundColor;
+
+  /// A check that specifies whether a [ScrollNotification] should be
+  /// handled by this widget.
+  ///
+  /// By default, checks whether `notification.depth == 0`. Set it to something
+  /// else for more complicated layouts.
+  final ScrollNotificationPredicate notificationPredicate;
+
+  /// {@macro flutter.material.progressIndicator.semanticsLabel}
+  ///
+  /// This will be defaulted to [MaterialLocalizations.refreshIndicatorSemanticLabel]
+  /// if it is null.
+  final String semanticsLabel;
+
+  /// {@macro flutter.material.progressIndicator.semanticsValue}
+  final String semanticsValue;
 
   @override
   _LiquidPullToRefreshState createState() => _LiquidPullToRefreshState();
 }
 
-class _LiquidPullToRefreshState extends RefreshIndicatorState {
+class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
+    with TickerProviderStateMixin<LiquidPullToRefresh> {
   AnimationController _positionController;
   AnimationController _scaleController;
   Animation<double> _positionFactor;
@@ -332,12 +368,18 @@ class _LiquidPullToRefreshState extends RefreshIndicatorState {
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
+
+    List<Widget> slivers =
+        List.from(widget.child.buildSlivers(context), growable: true);
+
     final Widget child = NotificationListener<ScrollNotification>(
       key: _key,
       onNotification: _handleScrollNotification,
       child: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: _handleGlowNotification,
-        child: widget.child,
+        child: CustomScrollView(
+          slivers: slivers,
+        ),
       ),
     );
     if (_mode == null) {
@@ -352,45 +394,67 @@ class _LiquidPullToRefreshState extends RefreshIndicatorState {
         _mode == _RefreshIndicatorMode.refresh ||
             _mode == _RefreshIndicatorMode.done;
 
-    return Stack(
-      children: <Widget>[
-        child,
-        Positioned(
-          top: _isIndicatorAtTop ? 0.0 : null,
-          bottom: !_isIndicatorAtTop ? 0.0 : null,
-          left: 0.0,
-          right: 0.0,
-          child: SizeTransition(
-            axisAlignment: _isIndicatorAtTop ? 1.0 : -1.0,
-            sizeFactor: _positionFactor, // this is what brings it down
-            child: Container(
-              padding: _isIndicatorAtTop
-                  ? EdgeInsets.only(top: widget.displacement)
-                  : EdgeInsets.only(bottom: widget.displacement),
-              alignment: _isIndicatorAtTop
-                  ? Alignment.topCenter
-                  : Alignment.bottomCenter,
-              child: ScaleTransition(
-                scale: _scaleFactor,
-                child: AnimatedBuilder(
-                  animation: _positionController,
-                  builder: (BuildContext context, Widget child) {
-                    return RefreshProgressIndicator(
-                      semanticsLabel: widget.semanticsLabel ??
-                          MaterialLocalizations.of(context)
-                              .refreshIndicatorSemanticLabel,
-                      semanticsValue: widget.semanticsValue,
-                      value: showIndeterminateIndicator ? null : _value.value,
-                      valueColor: _valueColor,
-                      backgroundColor: widget.backgroundColor,
-                    );
-                  },
-                ),
-              ),
+    Widget indi = Positioned(
+      top: _isIndicatorAtTop ? 0.0 : null,
+      bottom: !_isIndicatorAtTop ? 0.0 : null,
+      left: 0.0,
+      right: 0.0,
+      child: SizeTransition(
+        axisAlignment: _isIndicatorAtTop ? 1.0 : -1.0,
+        sizeFactor: _positionFactor, // this is what brings it down
+        child: Container(
+          padding: _isIndicatorAtTop
+              ? EdgeInsets.only(top: widget.displacement)
+              : EdgeInsets.only(bottom: widget.displacement),
+          alignment:
+              _isIndicatorAtTop ? Alignment.topCenter : Alignment.bottomCenter,
+          child: ScaleTransition(
+            scale: _scaleFactor,
+            child: AnimatedBuilder(
+              animation: _positionController,
+              builder: (BuildContext context, Widget child) {
+                return RefreshProgressIndicator(
+                  semanticsLabel: widget.semanticsLabel ??
+                      MaterialLocalizations.of(context)
+                          .refreshIndicatorSemanticLabel,
+                  semanticsValue: widget.semanticsValue,
+                  value: showIndeterminateIndicator ? null : _value.value,
+                  valueColor: _valueColor,
+                  backgroundColor: widget.backgroundColor,
+                );
+              },
             ),
           ),
         ),
-      ],
+      ),
+    );
+
+    slivers.insert(
+      0,
+      SliverToBoxAdapter(
+        child: AnimatedBuilder(
+          animation: _value,
+          builder: (BuildContext buildContext, Widget child) {
+            return Container(
+              height: _value.value * 200.0,
+              color: Colors.red,
+            );
+          },
+        ),
+      ),
+    );
+
+//    slivers.insert(0, indi);
+
+    return NotificationListener<ScrollNotification>(
+      key: _key,
+      onNotification: _handleScrollNotification,
+      child: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: _handleGlowNotification,
+        child: CustomScrollView(
+          slivers: slivers,
+        ),
+      ),
     );
   }
 }
