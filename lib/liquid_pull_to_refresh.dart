@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:liquid_pull_to_refresh/src/clipper.dart';
+
 // The over-scroll distance that moves the indicator to its maximum
 // displacement, as a percentage of the scrollable's container extent.
 const double _kDragContainerExtentPercentage = 0.25;
@@ -104,6 +106,9 @@ class LiquidPullToRefresh extends StatefulWidget {
 
 class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     with TickerProviderStateMixin<LiquidPullToRefresh> {
+  AnimationController _springController;
+  Animation<double> _springAnimation;
+
   AnimationController _positionController;
   AnimationController _scaleController;
   Animation<double> _positionFactor;
@@ -126,6 +131,11 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   @override
   void initState() {
     super.initState();
+    _springController = AnimationController(vsync: this);
+    _springAnimation =
+        _springController.drive(Tween<double>(begin: 1.0, end: -1.0));
+//          ..addListener(() => setState(() => <String, void>{}));
+
     _positionController = AnimationController(vsync: this);
     _positionFactor = _positionController.drive(_kDragSizeFactorLimitTween);
     _value = _positionController.drive(
@@ -150,6 +160,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
   @override
   void dispose() {
+    _springController.dispose();
+
     _positionController.dispose();
     _scaleController.dispose();
     super.dispose();
@@ -280,8 +292,10 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     });
     switch (_mode) {
       case _RefreshIndicatorMode.done:
-        await _scaleController.animateTo(1.0,
-            duration: _kIndicatorScaleDuration);
+        //TODO
+        await _positionController.animateTo(0.0,
+            duration: Duration(
+                milliseconds: _kIndicatorSnapDuration.inMilliseconds * 2));
         break;
       case _RefreshIndicatorMode.canceled:
         await _positionController.animateTo(0.0,
@@ -305,9 +319,13 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     final Completer<void> completer = Completer<void>();
     _pendingRefreshFuture = completer.future;
     _mode = _RefreshIndicatorMode.snap;
-    _positionController
-        .animateTo(1.0 / _kDragSizeFactorLimit,
-            duration: _kIndicatorSnapDuration)
+
+//    _positionController
+//        .animateTo(1.0 / _kDragSizeFactorLimit,
+//            duration: _kIndicatorSnapDuration)
+    _springController
+        .animateTo(0.0,
+            duration: Duration(milliseconds: 1000), curve: Curves.elasticOut)
         .then<void>((void value) {
       if (mounted && _mode == _RefreshIndicatorMode.snap) {
         assert(widget.onRefresh != null);
@@ -323,11 +341,13 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               exception: FlutterError('The onRefresh callback returned null.\n'
                   'The RefreshIndicator onRefresh callback must return a Future.'),
               context: 'when calling onRefresh',
-              library: 'material library',
+              library: 'LiquidPullToRefresh library',
             ));
           return true;
         }());
+
         if (refreshResult == null) return;
+
         refreshResult.whenComplete(() {
           if (mounted && _mode == _RefreshIndicatorMode.refresh) {
             completer.complete();
@@ -372,6 +392,36 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     List<Widget> slivers =
         List.from(widget.child.buildSlivers(context), growable: true);
 
+//    slivers.insert(
+//      0,
+//      SliverToBoxAdapter(
+//        child: ClipOval(
+//          clipper: Clipper(centreHeight: 200.0),
+//          child: Container(
+//            height: 250.0,
+//            color: Colors.red,
+//          ),
+//        ),
+//      ),
+//    );
+
+    //TODO : constant distance -> variables
+    slivers.insert(
+      0,
+      SliverToBoxAdapter(
+        child: ClipPath(
+          clipper: HillClipper(
+            centreHeight: 100,
+            curveHeight: 50.0,
+          ),
+          child: Container(
+            height: 150.0,
+            color: Colors.yellow,
+          ),
+        ),
+      ),
+    );
+
     final Widget child = NotificationListener<ScrollNotification>(
       key: _key,
       onNotification: _handleScrollNotification,
@@ -394,40 +444,42 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         _mode == _RefreshIndicatorMode.refresh ||
             _mode == _RefreshIndicatorMode.done;
 
-    Widget indi = Positioned(
-      top: _isIndicatorAtTop ? 0.0 : null,
-      bottom: !_isIndicatorAtTop ? 0.0 : null,
-      left: 0.0,
-      right: 0.0,
-      child: SizeTransition(
-        axisAlignment: _isIndicatorAtTop ? 1.0 : -1.0,
-        sizeFactor: _positionFactor, // this is what brings it down
-        child: Container(
-          padding: _isIndicatorAtTop
-              ? EdgeInsets.only(top: widget.displacement)
-              : EdgeInsets.only(bottom: widget.displacement),
-          alignment:
-              _isIndicatorAtTop ? Alignment.topCenter : Alignment.bottomCenter,
-          child: ScaleTransition(
-            scale: _scaleFactor,
-            child: AnimatedBuilder(
-              animation: _positionController,
-              builder: (BuildContext context, Widget child) {
-                return RefreshProgressIndicator(
-                  semanticsLabel: widget.semanticsLabel ??
-                      MaterialLocalizations.of(context)
-                          .refreshIndicatorSemanticLabel,
-                  semanticsValue: widget.semanticsValue,
-                  value: showIndeterminateIndicator ? null : _value.value,
-                  valueColor: _valueColor,
-                  backgroundColor: widget.backgroundColor,
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
+//    Widget indi = Positioned(
+//      top: _isIndicatorAtTop ? 0.0 : null,
+//      bottom: !_isIndicatorAtTop ? 0.0 : null,
+//      left: 0.0,
+//      right: 0.0,
+//      child: SizeTransition(
+//        axisAlignment: _isIndicatorAtTop ? 1.0 : -1.0,
+//        sizeFactor: _positionFactor, // this is what brings it down
+//        child: Container(
+//          padding: _isIndicatorAtTop
+//              ? EdgeInsets.only(top: widget.displacement)
+//              : EdgeInsets.only(bottom: widget.displacement),
+//          alignment:
+//              _isIndicatorAtTop ? Alignment.topCenter : Alignment.bottomCenter,
+//          child: ScaleTransition(
+//            scale: _scaleFactor,
+//            child: AnimatedBuilder(
+//              animation: _positionController,
+//              builder: (BuildContext context, Widget child) {
+//                return RefreshProgressIndicator(
+//                  semanticsLabel: widget.semanticsLabel ??
+//                      MaterialLocalizations.of(context)
+//                          .refreshIndicatorSemanticLabel,
+//                  semanticsValue: widget.semanticsValue,
+//                  value: showIndeterminateIndicator ? null : _value.value,
+//                  valueColor: _valueColor,
+//                  backgroundColor: widget.backgroundColor,
+//                );
+//              },
+//            ),
+//          ),
+//        ),
+//      ),
+//    );
+
+    //Todo: make spring animation working.
 
     slivers.insert(
       0,
@@ -435,9 +487,15 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         child: AnimatedBuilder(
           animation: _value,
           builder: (BuildContext buildContext, Widget child) {
-            return Container(
-              height: _value.value * 200.0,
-              color: Colors.red,
+            return ClipPath(
+              clipper: HillClipper(
+                centreHeight: 100.0,
+                curveHeight: 50.0 * _springAnimation.value,
+              ),
+              child: Container(
+                height: _value.value * 100.0 * 2,
+                color: Colors.red,
+              ),
             );
           },
         ),
