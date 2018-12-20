@@ -1,6 +1,7 @@
 library liquid_pull_to_refresh;
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
@@ -110,6 +111,11 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   AnimationController _springController;
   Animation<double> _springAnimation;
 
+  AnimationController _progressingController;
+  Animation<double> _progressingRotateAnimation;
+  Animation<double> _progressingPercentAnimation;
+  Animation<double> _progressingStartAngleAnimation;
+
   Animation<double> _childOpacityAnimation;
 
   AnimationController _positionController;
@@ -139,6 +145,23 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         _springController.drive(Tween<double>(begin: 1.0, end: -1.0));
 //          ..addListener(() => setState(() => <String, void>{}));
 
+    _progressingController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
+    _progressingRotateAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _progressingController,
+      curve: Interval(0.0, 1.0),
+    ));
+    _progressingPercentAnimation = Tween<double>(begin: 0.25, end: 5/6).animate(CurvedAnimation(
+      parent: _progressingController,
+      curve: Interval(0.0, 1.0, curve: _MyCurve()),
+    ));
+    _progressingStartAngleAnimation =
+        Tween<double>(begin: -2/3, end: 1/2).animate(CurvedAnimation(
+          parent: _progressingController,
+          curve: Interval(0.5, 1.0),
+        ));
+
     _positionController = AnimationController(vsync: this);
     _positionFactor = _positionController.drive(_kDragSizeFactorLimitTween);
     _value = _positionController.drive(
@@ -166,7 +189,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   @override
   void dispose() {
     _springController.dispose();
-
+    _progressingController.dispose();
     _positionController.dispose();
     _scaleController.dispose();
     super.dispose();
@@ -269,6 +292,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _scaleController.value = 0.0;
     _positionController.value = 0.0;
     _springController.value = 0.0;
+    _progressingController.value = 0.0;
     return true;
   }
 
@@ -339,6 +363,9 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           _mode = _RefreshIndicatorMode.refresh;
         });
 
+        //run progress animation
+        _progressingController..repeat();
+
         final Future<void> refreshResult = widget.onRefresh();
         assert(() {
           if (refreshResult == null)
@@ -356,6 +383,10 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         refreshResult.whenComplete(() {
           if (mounted && _mode == _RefreshIndicatorMode.refresh) {
             completer.complete();
+
+            //stop progressing animation
+            _progressingController.stop();
+
             _dismiss(_RefreshIndicatorMode.done);
           }
         });
@@ -420,7 +451,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             curveHeight: 50.0,
           ),
           child: Container(
-            height: 120.0,
+            height: 150.0,
             color: Colors.yellow,
             child: Align(
               alignment: Alignment.center,
@@ -566,6 +597,29 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             );
           },
         ),
+        Container(
+          height: 100.0,
+          child: Align(
+            alignment: Alignment.center,
+            child: AnimatedBuilder(
+              animation: _progressingController,
+              builder: (BuildContext buildContext, Widget child) {
+                return Transform(
+                  transform: Matrix4.identity()..rotateZ(_progressingRotateAnimation.value*5*pi/6),
+                  alignment: FractionalOffset.center,
+                  child: CircularProgress(
+                    progressCircleOpacity: 1.0,
+                    innerCircleRadius: 12.0,
+                    progressCircleBorderWidth: 3.0,
+                    progressCircleRadius: 21.0,
+                    startAngle: _progressingStartAngleAnimation.value * pi,
+                    progressPercent: _progressingPercentAnimation.value,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -596,5 +650,16 @@ class AnimatedContainer extends AnimatedWidget {
         color: Colors.red,
       ),
     );
+  }
+}
+
+class _MyCurve extends Curve {
+  @override
+  double transform(double t) {
+    if (t <= 0.5) {
+      return 2 * t;
+    } else {
+      return 2 * (1 - t);
+    }
   }
 }
