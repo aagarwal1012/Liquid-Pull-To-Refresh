@@ -263,6 +263,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _dragOffset = 0.0;
     _scaleController.value = 0.0;
     _positionController.value = 0.0;
+    _springController.value = 0.0;
     return true;
   }
 
@@ -324,7 +325,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 //        .animateTo(1.0 / _kDragSizeFactorLimit,
 //            duration: _kIndicatorSnapDuration)
     _springController
-        .animateTo(0.0,
+        .animateTo(0.5,
             duration: Duration(milliseconds: 1000), curve: Curves.elasticOut)
         .then<void>((void value) {
       if (mounted && _mode == _RefreshIndicatorMode.snap) {
@@ -485,7 +486,10 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       0,
       SliverToBoxAdapter(
         child: AnimatedBuilder(
-          animation: _value,
+          animation: Listenable.merge([
+            _positionController,
+            _springController,
+          ]),
           builder: (BuildContext buildContext, Widget child) {
             return ClipPath(
               clipper: HillClipper(
@@ -502,6 +506,21 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       ),
     );
 
+//    slivers.insert(
+//      0,
+//      SliverToBoxAdapter(
+//        child: AnimatedBuilder(
+//          animation: _value,
+//          builder: (BuildContext buildContext, Widget child) {
+//            return AnimatedContainer(
+//              listenable: _springAnimation,
+//              containerHeight: _value.value * 100.0 * 2,
+//            );
+//          },
+//        ),
+//      ),
+//    );
+
 //    slivers.insert(0, indi);
 
     return NotificationListener<ScrollNotification>(
@@ -512,6 +531,34 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         child: CustomScrollView(
           slivers: slivers,
         ),
+      ),
+    );
+  }
+}
+
+class AnimatedContainer extends AnimatedWidget {
+  final double containerHeight;
+  Animation<double> listenable;
+
+  AnimatedContainer({
+    Key key,
+    this.containerHeight,
+    this.listenable,
+  }) : super(
+          key: key,
+          listenable: listenable,
+        );
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: HillClipper(
+        centreHeight: 100.0,
+        curveHeight: 50.0 * listenable.value,
+      ),
+      child: Container(
+        height: containerHeight,
+        color: Colors.red,
       ),
     );
   }
