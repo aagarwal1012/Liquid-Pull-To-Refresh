@@ -3,6 +3,7 @@ library liquid_pull_to_refresh;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
 import 'dart:math' as math;
 
 import 'package:liquid_pull_to_refresh/src/clipper.dart';
@@ -421,6 +422,16 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           child: Container(
             height: 120.0,
             color: Colors.yellow,
+            child: Align(
+              alignment: Alignment.center,
+              child: CircularProgress(
+                progressCircleOpacity: 1.0,
+                innerCircleRadius: 16.0,
+                progressCircleBorderWidth: 4.0,
+                progressCircleRadius: 25.0,
+                progressPercent: 0.5,
+              ),
+            ),
           ),
         ),
       ),
@@ -521,9 +532,9 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       children: <Widget>[
         AnimatedBuilder(
           animation: _positionController,
-          builder: (BuildContext buildContext, Widget child){
+          builder: (BuildContext buildContext, Widget child) {
             return Opacity(
-              opacity: (_childOpacityAnimation.value - (1/3)).clamp(0.0, 1.0),
+              opacity: (_childOpacityAnimation.value - (1 / 3)).clamp(0.0, 1.0),
               child: NotificationListener<ScrollNotification>(
                 key: _key,
                 onNotification: _handleScrollNotification,
