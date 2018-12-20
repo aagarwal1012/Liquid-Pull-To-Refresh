@@ -9,6 +9,7 @@ class CircularProgress extends StatefulWidget {
   final double progressCircleRadius;
   final double progressCircleBorderWidth;
   final Color backgroundColor;
+  final double startAngle;
 
   const CircularProgress({
     Key key,
@@ -18,6 +19,7 @@ class CircularProgress extends StatefulWidget {
     this.progressCircleBorderWidth,
     this.backgroundColor,
     this.progressCircleOpacity,
+    this.startAngle,
   }) : super(key: key);
 
   @override
@@ -39,6 +41,7 @@ class _CircularProgressState extends State<CircularProgress> {
               width: widget.progressCircleRadius * 2,
               child: CustomPaint(
                 painter: RingPainter(
+                  startAngle: widget.startAngle,
                   paintWidth: widget.progressCircleBorderWidth,
                   progressPercent: widget.progressPercent,
                   trackColor: Colors.white,
@@ -81,8 +84,10 @@ class RingPainter extends CustomPainter {
   final Paint trackPaint;
   final Color trackColor;
   final double progressPercent;
+  final double startAngle;
 
   RingPainter({
+    this.startAngle,
     this.paintWidth,
     this.progressPercent,
     this.trackColor,
@@ -104,7 +109,7 @@ class RingPainter extends CustomPainter {
           center: center,
           radius: radius,
         ),
-        -pi / 2,
+        startAngle,
         progressAngle,
         false,
         trackPaint);
