@@ -109,6 +109,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   AnimationController _springController;
   Animation<double> _springAnimation;
 
+  Animation<double> _childOpacityAnimation;
+
   AnimationController _positionController;
   AnimationController _scaleController;
   Animation<double> _positionFactor;
@@ -140,6 +142,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _positionFactor = _positionController.drive(_kDragSizeFactorLimitTween);
     _value = _positionController.drive(
         _threeQuarterTween); // The "value" of the circular progress indicator during a drag.
+
+    _childOpacityAnimation = _positionController.drive(_oneToZeroTween);
 
     _scaleController = AnimationController(vsync: this);
     _scaleFactor = _scaleController.drive(_oneToZeroTween);
@@ -321,9 +325,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _pendingRefreshFuture = completer.future;
     _mode = _RefreshIndicatorMode.snap;
 
-//    _positionController
-//        .animateTo(1.0 / _kDragSizeFactorLimit,
-//            duration: _kIndicatorSnapDuration)
+    _positionController.animateTo(1.0 / _kDragSizeFactorLimit,
+        duration: Duration(milliseconds: 1000));
     _springController
         .animateTo(0.5,
             duration: Duration(milliseconds: 1000), curve: Curves.elasticOut)
@@ -416,7 +419,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             curveHeight: 50.0,
           ),
           child: Container(
-            height: 150.0,
+            height: 120.0,
             color: Colors.yellow,
           ),
         ),
@@ -486,20 +489,11 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       0,
       SliverToBoxAdapter(
         child: AnimatedBuilder(
-          animation: Listenable.merge([
-            _positionController,
-            _springController,
-          ]),
+          animation: _positionController,
           builder: (BuildContext buildContext, Widget child) {
-            return ClipPath(
-              clipper: HillClipper(
-                centreHeight: 100.0,
-                curveHeight: 50.0 * _springAnimation.value,
-              ),
-              child: Container(
-                height: _value.value * 100.0 * 2,
-                color: Colors.red,
-              ),
+            return Container(
+              height: _value.value * 100.0 * 2,
+              color: Colors.red,
             );
           },
         ),
@@ -523,15 +517,45 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
 //    slivers.insert(0, indi);
 
-    return NotificationListener<ScrollNotification>(
-      key: _key,
-      onNotification: _handleScrollNotification,
-      child: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: _handleGlowNotification,
-        child: CustomScrollView(
-          slivers: slivers,
+    return Stack(
+      children: <Widget>[
+        AnimatedBuilder(
+          animation: _positionController,
+          builder: (BuildContext buildContext, Widget child){
+            return Opacity(
+              opacity: (_childOpacityAnimation.value - (1/3)).clamp(0.0, 1.0),
+              child: NotificationListener<ScrollNotification>(
+                key: _key,
+                onNotification: _handleScrollNotification,
+                child: NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: _handleGlowNotification,
+                  child: CustomScrollView(
+                    slivers: slivers,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
-      ),
+        AnimatedBuilder(
+          animation: Listenable.merge([
+            _positionController,
+            _springController,
+          ]),
+          builder: (BuildContext buildContext, Widget child) {
+            return ClipPath(
+              clipper: HillClipper(
+                centreHeight: 100.0,
+                curveHeight: 50.0 * _springAnimation.value,
+              ),
+              child: Container(
+                height: _value.value * 100.0 * 2,
+                color: Colors.red,
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

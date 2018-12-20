@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class HillClipper extends CustomClipper<Path> {
   final double centreHeight;
-  final double curveHeight;
+  double curveHeight;
 
   HillClipper({
     this.centreHeight,
@@ -15,6 +15,11 @@ class HillClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = new Path();
     if (size.height > centreHeight) {
+
+      if(curveHeight > (size.height - centreHeight)){
+        curveHeight = size.height - centreHeight;
+      }
+
       path.lineTo(0.0, centreHeight);
 
       path.quadraticBezierTo(size.width / 4, centreHeight + curveHeight,
