@@ -116,6 +116,14 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   Animation<double> _progressingPercentAnimation;
   Animation<double> _progressingStartAngleAnimation;
 
+  AnimationController _ringDisappearController;
+  Animation<double> _ringRadiusAnimation;
+  Animation<double> _ringOpacityAnimation;
+
+  AnimationController _showPeakController;
+  Animation<double> _peakHeightUpAnimation;
+  Animation<double> _peakHeightDownAnimation;
+
   Animation<double> _childOpacityAnimation;
 
   AnimationController _positionController;
@@ -152,15 +160,32 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       parent: _progressingController,
       curve: Interval(0.0, 1.0),
     ));
-    _progressingPercentAnimation = Tween<double>(begin: 0.25, end: 5/6).animate(CurvedAnimation(
+    _progressingPercentAnimation =
+        Tween<double>(begin: 0.25, end: 5 / 6).animate(CurvedAnimation(
       parent: _progressingController,
       curve: Interval(0.0, 1.0, curve: _MyCurve()),
     ));
     _progressingStartAngleAnimation =
-        Tween<double>(begin: -2/3, end: 1/2).animate(CurvedAnimation(
-          parent: _progressingController,
-          curve: Interval(0.5, 1.0),
-        ));
+        Tween<double>(begin: -2 / 3, end: 1 / 2).animate(CurvedAnimation(
+      parent: _progressingController,
+      curve: Interval(0.5, 1.0),
+    ));
+
+    _ringDisappearController = AnimationController(vsync: this);
+    _ringRadiusAnimation = Tween<double>(begin: 1.0, end: 1.25).animate(
+        CurvedAnimation(
+            parent: _ringDisappearController, curve: Curves.easeOut));
+    _ringOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+            parent: _ringDisappearController, curve: Curves.easeIn));
+
+    _showPeakController = AnimationController(vsync: this);
+    _peakHeightUpAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+            parent: _showPeakController, curve: Interval(0.1, 0.2)));
+    _peakHeightDownAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+            parent: _showPeakController, curve: Interval(0.2, 0.3)));
 
     _positionController = AnimationController(vsync: this);
     _positionFactor = _positionController.drive(_kDragSizeFactorLimitTween);
@@ -192,6 +217,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _progressingController.dispose();
     _positionController.dispose();
     _scaleController.dispose();
+    _ringDisappearController.dispose();
+    _showPeakController.dispose();
     super.dispose();
   }
 
@@ -293,6 +320,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _positionController.value = 0.0;
     _springController.value = 0.0;
     _progressingController.value = 0.0;
+    _ringDisappearController.value = 0.0;
+    _showPeakController.value = 0.0;
     return true;
   }
 
@@ -323,6 +352,13 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     switch (_mode) {
       case _RefreshIndicatorMode.done:
         //TODO
+        //stop progressing animation
+        _progressingController.stop();
+
+        // progress ring disappear animation
+        await _ringDisappearController.animateTo(1.0,
+            duration: Duration(milliseconds: 200));
+
         await _positionController.animateTo(0.0,
             duration: Duration(
                 milliseconds: _kIndicatorSnapDuration.inMilliseconds * 2));
@@ -351,7 +387,9 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _mode = _RefreshIndicatorMode.snap;
 
     _positionController.animateTo(1.0 / _kDragSizeFactorLimit,
-        duration: Duration(milliseconds: 1000));
+        duration: Duration(milliseconds: 1000), curve: Curves.linear);
+    _showPeakController.animateTo(1.0,
+        duration: Duration(milliseconds: 1000), curve: Curves.linear);
     _springController
         .animateTo(0.5,
             duration: Duration(milliseconds: 1000), curve: Curves.elasticOut)
@@ -383,9 +421,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         refreshResult.whenComplete(() {
           if (mounted && _mode == _RefreshIndicatorMode.refresh) {
             completer.complete();
-
-            //stop progressing animation
-            _progressingController.stop();
 
             _dismiss(_RefreshIndicatorMode.done);
           }
@@ -448,19 +483,24 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         child: ClipPath(
           clipper: HillClipper(
             centreHeight: 100,
-            curveHeight: 50.0,
+            curveHeight: 0.0,
+            peakHeight: 12.0,
+            peakWidth: 12.0 * 5 / 2,
           ),
           child: Container(
             height: 150.0,
             color: Colors.yellow,
             child: Align(
               alignment: Alignment.center,
-              child: CircularProgress(
-                progressCircleOpacity: 1.0,
-                innerCircleRadius: 16.0,
-                progressCircleBorderWidth: 4.0,
-                progressCircleRadius: 25.0,
-                progressPercent: 0.5,
+              child: Opacity(
+                opacity: 0.0,
+                child: CircularProgress(
+                  progressCircleOpacity: 1.0,
+                  innerCircleRadius: 12.0,
+                  progressCircleBorderWidth: 3.0,
+                  progressCircleRadius: 21.0,
+                  progressPercent: 0.5,
+                ),
               ),
             ),
           ),
@@ -535,7 +575,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           builder: (BuildContext buildContext, Widget child) {
             return Container(
               height: _value.value * 100.0 * 2,
-              color: Colors.red,
             );
           },
         ),
@@ -565,7 +604,10 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           animation: _positionController,
           builder: (BuildContext buildContext, Widget child) {
             return Opacity(
-              opacity: (_childOpacityAnimation.value - (1 / 3)).clamp(0.0, 1.0),
+              // -0.1 is done for elasticOut curve
+              opacity: (_childOpacityAnimation.value - (1 / 3) - 0.1)
+                  .clamp(0.0, 1.0),
+//              opacity: 1.0,
               child: NotificationListener<ScrollNotification>(
                 key: _key,
                 onNotification: _handleScrollNotification,
@@ -579,76 +621,62 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             );
           },
         ),
-        AnimatedBuilder(
-          animation: Listenable.merge([
-            _positionController,
-            _springController,
-          ]),
-          builder: (BuildContext buildContext, Widget child) {
-            return ClipPath(
-              clipper: HillClipper(
-                centreHeight: 100.0,
-                curveHeight: 50.0 * _springAnimation.value,
-              ),
-              child: Container(
-                height: _value.value * 100.0 * 2,
-                color: Colors.red,
-              ),
-            );
-          },
+        Opacity(
+          opacity: 1.0,
+          child: AnimatedBuilder(
+            animation: Listenable.merge([
+              _positionController,
+              _springController,
+              _showPeakController,
+            ]),
+            builder: (BuildContext buildContext, Widget child) {
+              return ClipPath(
+                clipper: HillClipper(
+                  centreHeight: 100.0,
+                  curveHeight: 50.0 * _springAnimation.value,
+                  peakHeight: (_peakHeightUpAnimation.value != 1.0) ? 12.0*_peakHeightUpAnimation.value : 12.0*_peakHeightDownAnimation.value,
+                peakWidth: (_peakHeightUpAnimation.value != 0.0 && _peakHeightDownAnimation.value != 0.0) ? 12.0 * 5 / 2 : 0.0,
+                ),
+                child: Container(
+                  height: _value.value * 100.0 * 2,
+                  color: Colors.red,
+                ),
+              );
+            },
+          ),
         ),
-        Container(
-          height: 100.0,
-          child: Align(
-            alignment: Alignment.center,
-            child: AnimatedBuilder(
-              animation: _progressingController,
-              builder: (BuildContext buildContext, Widget child) {
-                return Transform(
-                  transform: Matrix4.identity()..rotateZ(_progressingRotateAnimation.value*5*pi/6),
-                  alignment: FractionalOffset.center,
-                  child: CircularProgress(
-                    progressCircleOpacity: 1.0,
-                    innerCircleRadius: 12.0,
-                    progressCircleBorderWidth: 3.0,
-                    progressCircleRadius: 21.0,
-                    startAngle: _progressingStartAngleAnimation.value * pi,
-                    progressPercent: _progressingPercentAnimation.value,
-                  ),
-                );
-              },
+        Opacity(
+          opacity: 1.0,
+          child: Container(
+            height: 100.0,
+            child: Align(
+              alignment: Alignment.center,
+              child: AnimatedBuilder(
+                animation: Listenable.merge([
+                  _progressingController,
+                  _ringDisappearController,
+                ]),
+                builder: (BuildContext buildContext, Widget child) {
+                  return Transform(
+                    transform: Matrix4.identity()
+                      ..rotateZ(_progressingRotateAnimation.value * 5 * pi / 6),
+                    alignment: FractionalOffset.center,
+                    child: CircularProgress(
+                      progressCircleOpacity: _ringOpacityAnimation.value,
+                      innerCircleRadius: 12.0,
+                      progressCircleBorderWidth: 3.0,
+                      progressCircleRadius:
+                          (18.0 + 3.0) * _ringRadiusAnimation.value,
+                      startAngle: _progressingStartAngleAnimation.value * pi,
+                      progressPercent: _progressingPercentAnimation.value,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class AnimatedContainer extends AnimatedWidget {
-  final double containerHeight;
-  Animation<double> listenable;
-
-  AnimatedContainer({
-    Key key,
-    this.containerHeight,
-    this.listenable,
-  }) : super(
-          key: key,
-          listenable: listenable,
-        );
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: HillClipper(
-        centreHeight: 100.0,
-        curveHeight: 50.0 * listenable.value,
-      ),
-      child: Container(
-        height: containerHeight,
-        color: Colors.red,
-      ),
     );
   }
 }
