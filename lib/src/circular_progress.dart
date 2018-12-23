@@ -29,9 +29,12 @@ class CircularProgress extends StatefulWidget {
 class _CircularProgressState extends State<CircularProgress> {
   @override
   Widget build(BuildContext context) {
+    double containerLength =
+        2 * max(widget.progressCircleRadius, widget.innerCircleRadius);
+
     return Container(
-      height: widget.progressCircleRadius * 2,
-      width: widget.progressCircleRadius * 2,
+      height: containerLength,
+      width: containerLength,
       child: Stack(
         children: <Widget>[
           Opacity(

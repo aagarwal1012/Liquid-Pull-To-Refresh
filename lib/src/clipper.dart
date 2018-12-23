@@ -42,7 +42,7 @@ class HillClipper extends CustomClipper<Path> {
         path.lineTo(0.0, 0.0);
       }
     } else {
-      if (size.height > centreHeight) {
+      if (size.height >= centreHeight) {
         if (curveHeight > (size.height - centreHeight)) {
           curveHeight = size.height - centreHeight;
         }
