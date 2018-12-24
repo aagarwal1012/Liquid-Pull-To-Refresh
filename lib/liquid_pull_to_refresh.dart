@@ -13,12 +13,12 @@ import 'package:liquid_pull_to_refresh/src/clipper.dart';
 // displacement, as a percentage of the scrollable's container extent.
 const double _kDragContainerExtentPercentage = 0.25;
 
-// How much the scroll's drag gesture can overshoot the RefreshIndicator's
+// How much the scroll's drag gesture can overshoot the LiquidPullToRefresh's
 // displacement; max displacement = _kDragSizeFactorLimit * displacement.
 const double _kDragSizeFactorLimit = 1.5;
 
-// When the scroll ends, the duration of the refresh indicator's animation
-// to the RefreshIndicator's displacement.
+// When the scroll ends, the duration of the progress indicator's animation
+// to the LiquidPullToRefresh's displacement.
 const Duration _kIndicatorSnapDuration = Duration(milliseconds: 150);
 
 // The duration of the ScaleTransitionIn of box that starts when the
@@ -35,7 +35,7 @@ typedef RefreshCallback = Future<void> Function();
 
 // The state machine moves through these modes only when the scrollable
 // identified by scrollableKey has been scrolled to its min or max limit.
-enum _RefreshIndicatorMode {
+enum _LiquidPullToRefreshMode {
   drag, // Pointer is down.
   armed, // Dragged far enough that an up event will run the onRefresh callback.
   snap, // Animating to the indicator's final "displacement".
@@ -62,7 +62,7 @@ class LiquidPullToRefresh extends StatefulWidget {
 
   /// The widget below this widget in the tree.
   ///
-  /// The refresh indicator will be stacked on top of this child. The indicator
+  /// The progress indicator will be stacked on top of this child. The indicator
   /// will appear when child's Scrollable descendant is over-scrolled.
   ///
   /// Typically a [ListView] or [CustomScrollView].
@@ -85,7 +85,7 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// default to 2.0
   final double borderWidth;
 
-  /// A function that's called when the user has dragged the refresh indicator
+  /// A function that's called when the user has dragged the progress indicator
   /// far enough to demonstrate that they want the app to refresh. The returned
   /// [Future] must complete when the refresh operation is finished.
   final RefreshCallback onRefresh;
@@ -143,7 +143,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   Animation<double> _value;
   Animation<Color> _valueColor;
 
-  _RefreshIndicatorMode _mode;
+  _LiquidPullToRefreshMode _mode;
   Future<void> _pendingRefreshFuture;
   bool _isIndicatorAtTop;
   double _dragOffset;
@@ -258,7 +258,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         _mode == null &&
         _start(notification.metrics.axisDirection)) {
       setState(() {
-        _mode = _RefreshIndicatorMode.drag;
+        _mode = _LiquidPullToRefreshMode.drag;
       });
       return false;
     }
@@ -276,39 +276,39 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         break;
     }
     if (indicatorAtTopNow != _isIndicatorAtTop) {
-      if (_mode == _RefreshIndicatorMode.drag ||
-          _mode == _RefreshIndicatorMode.armed)
-        _dismiss(_RefreshIndicatorMode.canceled);
+      if (_mode == _LiquidPullToRefreshMode.drag ||
+          _mode == _LiquidPullToRefreshMode.armed)
+        _dismiss(_LiquidPullToRefreshMode.canceled);
     } else if (notification is ScrollUpdateNotification) {
-      if (_mode == _RefreshIndicatorMode.drag ||
-          _mode == _RefreshIndicatorMode.armed) {
+      if (_mode == _LiquidPullToRefreshMode.drag ||
+          _mode == _LiquidPullToRefreshMode.armed) {
         if (notification.metrics.extentBefore > 0.0) {
-          _dismiss(_RefreshIndicatorMode.canceled);
+          _dismiss(_LiquidPullToRefreshMode.canceled);
         } else {
           _dragOffset -= notification.scrollDelta;
           _checkDragOffset(notification.metrics.viewportDimension);
         }
       }
-      if (_mode == _RefreshIndicatorMode.armed &&
+      if (_mode == _LiquidPullToRefreshMode.armed &&
           notification.dragDetails == null) {
         // On iOS start the refresh when the Scrollable bounces back from the
-        // overscroll (ScrollNotification indicating this don't have dragDetails
+        // OverScroll (ScrollNotification indicating this don't have dragDetails
         // because the scroll activity is not directly triggered by a drag).
         _show();
       }
     } else if (notification is OverscrollNotification) {
-      if (_mode == _RefreshIndicatorMode.drag ||
-          _mode == _RefreshIndicatorMode.armed) {
+      if (_mode == _LiquidPullToRefreshMode.drag ||
+          _mode == _LiquidPullToRefreshMode.armed) {
         _dragOffset -= notification.overscroll / 2.0;
         _checkDragOffset(notification.metrics.viewportDimension);
       }
     } else if (notification is ScrollEndNotification) {
       switch (_mode) {
-        case _RefreshIndicatorMode.armed:
+        case _LiquidPullToRefreshMode.armed:
           _show();
           break;
-        case _RefreshIndicatorMode.drag:
-          _dismiss(_RefreshIndicatorMode.canceled);
+        case _LiquidPullToRefreshMode.drag:
+          _dismiss(_LiquidPullToRefreshMode.canceled);
           break;
         default:
           // do nothing
@@ -320,32 +320,30 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
   bool _handleGlowNotification(OverscrollIndicatorNotification notification) {
     if (notification.depth != 0 || !notification.leading) return false;
-    if (_mode == _RefreshIndicatorMode.drag) {
+    if (_mode == _LiquidPullToRefreshMode.drag) {
       notification.disallowGlow();
       return true;
     }
     return false;
   }
 
-  // Stop showing the refresh indicator.
-  Future<void> _dismiss(_RefreshIndicatorMode newMode) async {
+  // Stop showing the progress indicator.
+  Future<void> _dismiss(_LiquidPullToRefreshMode newMode) async {
     await Future<void>.value();
     // This can only be called from _show() when refreshing and
     // _handleScrollNotification in response to a ScrollEndNotification or
     // direction change.
-    assert(newMode == _RefreshIndicatorMode.canceled ||
-        newMode == _RefreshIndicatorMode.done);
+    assert(newMode == _LiquidPullToRefreshMode.canceled ||
+        newMode == _LiquidPullToRefreshMode.done);
     setState(() {
       _mode = newMode;
     });
     switch (_mode) {
-      case _RefreshIndicatorMode.done:
-        //TODO
+      case _LiquidPullToRefreshMode.done:
         //stop progressing animation
         _progressingController.stop();
 
         // progress ring disappear animation
-//        _ringDisappearController.value = 0.0;
         _ringDisappearController.animateTo(1.0,
             duration: Duration(
                 milliseconds: widget.springAnimationDurationInMilliseconds),
@@ -387,7 +385,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                 milliseconds: _kIndicatorSnapDuration.inMilliseconds * 2));
         break;
 
-      case _RefreshIndicatorMode.canceled:
+      case _LiquidPullToRefreshMode.canceled:
         await _positionController.animateTo(0.0,
             duration: _kIndicatorScaleDuration);
         break;
@@ -433,24 +431,24 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   }
 
   void _checkDragOffset(double containerExtent) {
-    assert(_mode == _RefreshIndicatorMode.drag ||
-        _mode == _RefreshIndicatorMode.armed);
+    assert(_mode == _LiquidPullToRefreshMode.drag ||
+        _mode == _LiquidPullToRefreshMode.armed);
     double newValue =
         _dragOffset / (containerExtent * _kDragContainerExtentPercentage);
-    if (_mode == _RefreshIndicatorMode.armed)
+    if (_mode == _LiquidPullToRefreshMode.armed)
       newValue = math.max(newValue, 1.0 / _kDragSizeFactorLimit);
     _positionController.value =
         newValue.clamp(0.0, 1.0); // this triggers various rebuilds
-    if (_mode == _RefreshIndicatorMode.drag && _valueColor.value.alpha == 0xFF)
-      _mode = _RefreshIndicatorMode.armed;
+    if (_mode == _LiquidPullToRefreshMode.drag && _valueColor.value.alpha == 0xFF)
+      _mode = _LiquidPullToRefreshMode.armed;
   }
 
   void _show() {
-    assert(_mode != _RefreshIndicatorMode.refresh);
-    assert(_mode != _RefreshIndicatorMode.snap);
+    assert(_mode != _LiquidPullToRefreshMode.refresh);
+    assert(_mode != _LiquidPullToRefreshMode.snap);
     final Completer<void> completer = Completer<void>();
     _pendingRefreshFuture = completer.future;
-    _mode = _RefreshIndicatorMode.snap;
+    _mode = _LiquidPullToRefreshMode.snap;
 
     _positionController.animateTo(1.0 / _kDragSizeFactorLimit,
         duration: Duration(
@@ -463,7 +461,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         curve: Curves.linear);
 
     //indicator translate in with peak
-//    _indicatorMoveWithPeakController.value = 0.0;
     _indicatorMoveWithPeakController.animateTo(1.0,
         duration: Duration(
             milliseconds: widget.springAnimationDurationInMilliseconds),
@@ -486,12 +483,12 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                 milliseconds: widget.springAnimationDurationInMilliseconds),
             curve: Curves.elasticOut)
         .then<void>((void value) {
-      if (mounted && _mode == _RefreshIndicatorMode.snap) {
+      if (mounted && _mode == _LiquidPullToRefreshMode.snap) {
         assert(widget.onRefresh != null);
 
         setState(() {
           // Show the indeterminate progress indicator.
-          _mode = _RefreshIndicatorMode.refresh;
+          _mode = _LiquidPullToRefreshMode.refresh;
         });
 
         //run progress animation
@@ -502,7 +499,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           if (refreshResult == null)
             FlutterError.reportError(FlutterErrorDetails(
               exception: FlutterError('The onRefresh callback returned null.\n'
-                  'The RefreshIndicator onRefresh callback must return a Future.'),
+                  'The LiquidPullToRefresh onRefresh callback must return a Future.'),
               context: 'when calling onRefresh',
               library: 'LiquidPullToRefresh library',
             ));
@@ -512,35 +509,35 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         if (refreshResult == null) return;
 
         refreshResult.whenComplete(() {
-          if (mounted && _mode == _RefreshIndicatorMode.refresh) {
+          if (mounted && _mode == _LiquidPullToRefreshMode.refresh) {
             completer.complete();
 
-            _dismiss(_RefreshIndicatorMode.done);
+            _dismiss(_LiquidPullToRefreshMode.done);
           }
         });
       }
     });
   }
 
-  /// Show the refresh indicator and run the refresh callback as if it had
+  /// Show the progress indicator and run the refresh callback as if it had
   /// been started interactively. If this method is called while the refresh
   /// callback is running, it quietly does nothing.
   ///
-  /// Creating the [RefreshIndicator] with a [GlobalKey<RefreshIndicatorState>]
-  /// makes it possible to refer to the [RefreshIndicatorState].
+  /// Creating the [LiquidPullToRefresh] with a [GlobalKey<LiquidPullToRefreshState>]
+  /// makes it possible to refer to the [LiquidPullToRefreshState].
   ///
   /// The future returned from this method completes when the
-  /// [RefreshIndicator.onRefresh] callback's future completes.
+  /// [LiquidPullToRefresh.onRefresh] callback's future completes.
   ///
   /// If you await the future returned by this function from a [State], you
   /// should check that the state is still [mounted] before calling [setState].
   ///
-  /// When initiated in this manner, the refresh indicator is independent of any
+  /// When initiated in this manner, the progress indicator is independent of any
   /// actual scroll view. It defaults to showing the indicator at the top. To
   /// show it at the bottom, set `atTop` to false.
   Future<void> show({bool atTop = true}) {
-    if (_mode != _RefreshIndicatorMode.refresh &&
-        _mode != _RefreshIndicatorMode.snap) {
+    if (_mode != _LiquidPullToRefreshMode.refresh &&
+        _mode != _LiquidPullToRefreshMode.snap) {
       if (_mode == null) _start(atTop ? AxisDirection.down : AxisDirection.up);
       _show();
     }
@@ -557,18 +554,19 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     Color _defaultColor = Theme.of(context).accentColor;
     Color _defaultBackgroundColor = Theme.of(context).canvasColor;
 
-    //assigning default height
+    // assigning default height
     double _defaultHeight = 100.0;
 
-    //checking whether to take default values or not
+    // checking whether to take default values or not
     Color color = (widget.color != null) ? widget.color : _defaultColor;
     Color backgroundColor = (widget.backgroundColor != null)
         ? widget.backgroundColor
         : _defaultBackgroundColor;
     double height = (widget.height != null) ? widget.height : _defaultHeight;
 
+    // converting list items to slivers
     List<Widget> slivers =
-        List.from(widget.child.buildSlivers(context), growable: true);
+        List.from(widget.child.buildSlivers(context), growable: true); // ignore: invalid_use_of_protected_member
 
     //Code Added for testing
 //    slivers.insert(
@@ -713,7 +711,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                     innerCircleRadius: height *
                         15 /
                         100 * // 15.0
-                        ((_mode != _RefreshIndicatorMode.done)
+                        ((_mode != _LiquidPullToRefreshMode.done)
                             ? _indicatorRadiusWithPeakAnimation.value
                             : _radiusAnimation.value),
                     progressCircleBorderWidth: widget.borderWidth,
