@@ -8,6 +8,7 @@ import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
 import 'dart:math' as math;
 
 import 'package:liquid_pull_to_refresh/src/clipper.dart';
+import 'package:liquid_pull_to_refresh/src/curves.dart';
 
 // The over-scroll distance that moves the indicator to its maximum
 // displacement, as a percentage of the scrollable's container extent.
@@ -175,7 +176,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _progressingPercentAnimation =
         Tween<double>(begin: 0.25, end: 5 / 6).animate(CurvedAnimation(
       parent: _progressingController,
-      curve: Interval(0.0, 1.0, curve: _MyCurve()),
+      curve: Interval(0.0, 1.0, curve: ProgressRingCurve()),
     ));
     _progressingStartAngleAnimation =
         Tween<double>(begin: -2 / 3, end: 1 / 2).animate(CurvedAnimation(
@@ -722,16 +723,5 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         ),
       ],
     );
-  }
-}
-
-class _MyCurve extends Curve {
-  @override
-  double transform(double t) {
-    if (t <= 0.5) {
-      return 2 * t;
-    } else {
-      return 2 * (1 - t);
-    }
   }
 }
