@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'LiquidPullToRefresh'),
+      home: MyHomePage(title: 'Liquid Pull To Refresh'),
     );
   }
 }
@@ -69,7 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Stack(
+          children: <Widget>[
+            Align(alignment: Alignment(-1.0, 0.0),child: Icon(Icons.reorder)),
+            Align(alignment: Alignment(-0.3, 0.0),child: Text(widget.title)),
+          ],
+        ),
       ),
       body: LiquidPullToRefresh(
         key: _refreshIndicatorKey,
