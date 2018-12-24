@@ -220,7 +220,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
     _positionController = AnimationController(vsync: this);
     _value = _positionController.drive(
-        _threeQuarterTween); // The "value" of the circular progress indicator during a drag.
+        _threeQuarterTween);
 
     _childOpacityAnimation = _positionController.drive(_oneToZeroTween);
   }
@@ -638,8 +638,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           animation: _positionController,
           builder: (BuildContext buildContext, Widget child) {
             return Opacity(
-              // -0.1 is done for elasticOut curve
-              opacity: (_childOpacityAnimation.value - (1 / 3) - 0.1)
+              // -0.01 is done for elasticOut curve
+              opacity: (_childOpacityAnimation.value - (1 / 3) - 0.01)
                   .clamp(0.0, 1.0),
               child: NotificationListener<ScrollNotification>(
                 key: _key,
@@ -662,7 +662,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           ]),
           builder: (BuildContext buildContext, Widget child) {
             return ClipPath(
-              clipper: HillClipper(
+              clipper: CurveHillClipper(
                 centreHeight: height,
                 curveHeight: height / 2 * _springAnimation.value, // 50.0
                 peakHeight: height *
