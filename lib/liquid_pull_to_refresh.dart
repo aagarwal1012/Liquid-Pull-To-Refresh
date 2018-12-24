@@ -8,7 +8,6 @@ import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
 import 'dart:math' as math;
 
 import 'package:liquid_pull_to_refresh/src/clipper.dart';
-import 'package:liquid_pull_to_refresh/src/curves.dart';
 
 // The over-scroll distance that moves the indicator to its maximum
 // displacement, as a percentage of the scrollable's container extent.
@@ -237,6 +236,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
   @override
   void didChangeDependencies() {
+    //Todo : handle theme change
     final ThemeData theme = Theme.of(context);
     _valueColor = _positionController.drive(
       ColorTween(
@@ -676,7 +676,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               ),
               child: Container(
                 height: _value.value * 100.0 * 2,
-                color: Colors.red,
+                color: widget.color,
               ),
             );
           },
@@ -723,5 +723,16 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         ),
       ],
     );
+  }
+}
+
+class ProgressRingCurve extends Curve {
+  @override
+  double transform(double t) {
+    if (t <= 0.5) {
+      return 2 * t;
+    } else {
+      return 2 * (1 - t);
+    }
   }
 }
