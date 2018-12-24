@@ -2,11 +2,10 @@ library liquid_pull_to_refresh;
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
-import 'dart:math' as math;
-
 import 'package:liquid_pull_to_refresh/src/clipper.dart';
 
 // The over-scroll distance that moves the indicator to its maximum
@@ -55,6 +54,7 @@ class LiquidPullToRefresh extends StatefulWidget {
     this.height,
     this.springAnimationDurationInMilliseconds = 1000,
     this.borderWidth = 2.0,
+    this.showChildOpacityTransition = true,
   })  : assert(child != null),
         assert(onRefresh != null),
         assert(notificationPredicate != null),
@@ -84,6 +84,11 @@ class LiquidPullToRefresh extends StatefulWidget {
   ///
   /// default to 2.0
   final double borderWidth;
+
+  /// Whether to show child opacity transition or not.
+  ///
+  /// default to true
+  final bool showChildOpacityTransition;
 
   /// A function that's called when the user has dragged the progress indicator
   /// far enough to demonstrate that they want the app to refresh. The returned
@@ -219,8 +224,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         CurvedAnimation(parent: _radiusController, curve: Curves.easeIn));
 
     _positionController = AnimationController(vsync: this);
-    _value = _positionController.drive(
-        _threeQuarterTween);
+    _value = _positionController.drive(_threeQuarterTween);
 
     _childOpacityAnimation = _positionController.drive(_oneToZeroTween);
   }
@@ -439,8 +443,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       newValue = math.max(newValue, 1.0 / _kDragSizeFactorLimit);
     _positionController.value =
         newValue.clamp(0.0, 1.0); // this triggers various rebuilds
-    if (_mode == _LiquidPullToRefreshMode.drag && _valueColor.value.alpha == 0xFF)
-      _mode = _LiquidPullToRefreshMode.armed;
+    if (_mode == _LiquidPullToRefreshMode.drag &&
+        _valueColor.value.alpha == 0xFF) _mode = _LiquidPullToRefreshMode.armed;
   }
 
   void _show() {
@@ -565,8 +569,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     double height = (widget.height != null) ? widget.height : _defaultHeight;
 
     // converting list items to slivers
-    List<Widget> slivers =
-        List.from(widget.child.buildSlivers(context), growable: true); // ignore: invalid_use_of_protected_member
+    List<Widget> slivers = List.from(widget.child.buildSlivers(context),
+        growable: true); // ignore: invalid_use_of_protected_member
 
     //Code Added for testing
 //    slivers.insert(
@@ -625,7 +629,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           animation: _positionController,
           builder: (BuildContext buildContext, Widget child) {
             return Container(
-              height: _value.value * 100.0 * 2,
+              height: _value.value * height * 2, //100.0
             );
           },
         ),
@@ -639,8 +643,10 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
           builder: (BuildContext buildContext, Widget child) {
             return Opacity(
               // -0.01 is done for elasticOut curve
-              opacity: (_childOpacityAnimation.value - (1 / 3) - 0.01)
-                  .clamp(0.0, 1.0),
+              opacity: (widget.showChildOpacityTransition)
+                  ? (_childOpacityAnimation.value - (1 / 3) - 0.01)
+                      .clamp(0.0, 1.0)
+                  : 1.0,
               child: NotificationListener<ScrollNotification>(
                 key: _key,
                 onNotification: _handleScrollNotification,
