@@ -560,6 +560,10 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
 
+    // assigning default color and background color
+    Color _defaultColor = Theme.of(context).accentColor;
+    Color _defaultBackgroundColor = Theme.of(context).canvasColor;
+
     List<Widget> slivers =
         List.from(widget.child.buildSlivers(context), growable: true);
 
@@ -612,10 +616,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     }
     assert(_dragOffset != null);
     assert(_isIndicatorAtTop != null);
-
-    final bool showIndeterminateIndicator =
-        _mode == _RefreshIndicatorMode.refresh ||
-            _mode == _RefreshIndicatorMode.done;
 
     slivers.insert(
       0,
@@ -676,7 +676,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               ),
               child: Container(
                 height: _value.value * 100.0 * 2,
-                color: widget.color,
+                color: (widget.color != null) ? widget.color : _defaultColor,
               ),
             );
           },
@@ -704,6 +704,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                     ..rotateZ(_progressingRotateAnimation.value * 5 * pi / 6),
                   alignment: FractionalOffset.center,
                   child: CircularProgress(
+                    backgroundColor: (widget.backgroundColor != null) ? widget.backgroundColor : _defaultBackgroundColor,
                     progressCircleOpacity: _ringOpacityAnimation.value,
                     innerCircleRadius: 15.0 *
                         ((_mode != _RefreshIndicatorMode.done)

@@ -47,7 +47,7 @@ class _CircularProgressState extends State<CircularProgress> {
                   startAngle: widget.startAngle,
                   paintWidth: widget.progressCircleBorderWidth,
                   progressPercent: widget.progressPercent,
-                  trackColor: Colors.white,
+                  trackColor: widget.backgroundColor,
                 ),
               ),
             ),
@@ -59,7 +59,7 @@ class _CircularProgressState extends State<CircularProgress> {
               height: widget.innerCircleRadius * 2,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: widget.backgroundColor,
               ),
             ),
           )
