@@ -1,9 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import '../example/lib/main.dart';
 
 void main() {
-  test('adds one to input values', () {
+  testWidgets('smoke test for the app', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+    expect(find.text("This item represents A."), findsOneWidget);
+  });
 
+  testWidgets('full dragging', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+    await tester.drag(find.byType(MyApp), Offset(0.0, 400.0));
+    tester.pumpAndSettle();
+  });
+
+  testWidgets('incomplete dragging', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+    await tester.drag(find.byType(MyApp), Offset(0.0, 100.0));
+    tester.pumpAndSettle();
   });
 }
