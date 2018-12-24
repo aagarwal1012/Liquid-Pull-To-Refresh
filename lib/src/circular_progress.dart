@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+/// Progress Indicator for [LiquidPullToRefresh]
 class CircularProgress extends StatefulWidget {
   final double innerCircleRadius;
   final double progressPercent;

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-class HillClipper extends CustomClipper<Path> {
+/// Clipper for [LiquidPullToRefresh]
+class CurveHillClipper extends CustomClipper<Path> {
   final double centreHeight;
   double curveHeight;
   final double peakHeight;
   final double peakWidth;
 
-  HillClipper({
+  CurveHillClipper({
     this.centreHeight,
     this.curveHeight,
     this.peakHeight,
