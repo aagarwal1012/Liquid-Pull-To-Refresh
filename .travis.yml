@@ -1,0 +1,33 @@
+os:
+  - linux
+sudo: false
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++6
+      - fonts-droid
+git:
+  depth: 3
+cache:
+  directories:
+    - $HOME/.pub-cache
+env:
+  - FLUTTER_VERSION=beta
+  - FLUTTER_VERSION=dev
+  - FLUTTER_VERSION=stable
+matrix:
+  allow_failures:
+    - env: FLUTTER_VERSION=dev
+before_script:
+  - cd ../
+  - git clone https://github.com/flutter/flutter.git -b $FLUTTER_VERSION
+  - ./flutter/bin/flutter doctor
+  - cd Liquid-Pull-To-Refresh/
+script:
+  - ./../flutter/bin/flutter test
+  - ./../flutter/bin/flutter analyze .
+  - ./../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run lib/
+  - ./../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run test/
+  - ./../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run example/lib/
