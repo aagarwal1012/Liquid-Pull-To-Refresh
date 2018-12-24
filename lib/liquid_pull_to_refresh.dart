@@ -562,50 +562,37 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     List<Widget> slivers =
         List.from(widget.child.buildSlivers(context), growable: true);
 
+    //Code Added for testing
 //    slivers.insert(
 //      0,
 //      SliverToBoxAdapter(
-//        child: ClipOval(
-//          clipper: Clipper(centreHeight: 200.0),
+//        child: ClipPath(
+//          clipper: HillClipper(
+//            centreHeight: 100,
+//            curveHeight: 50.0,
+//            peakHeight: 30.0,
+//            peakWidth: 15.0 * 5 / 2,
+//          ),
 //          child: Container(
-//            height: 250.0,
-//            color: Colors.red,
+//            height: 100.0,
+//            color: Colors.yellow,
+//            child: Align(
+//              alignment: Alignment(0.0, 1.0),
+//              child: Opacity(
+//                opacity: 1.0,
+//                child: CircularProgress(
+//                  progressCircleOpacity: 1.0,
+//                  innerCircleRadius: 15.0,
+//                  progressCircleBorderWidth: 0.0,
+//                  progressCircleRadius: 0.0,
+//                  progressPercent: 0.5,
+//                ),
+//              ),
+//            ),
 //          ),
 //        ),
 //      ),
 //    );
-
-    //TODO : constant distance -> variables
-    slivers.insert(
-      0,
-      SliverToBoxAdapter(
-        child: ClipPath(
-          clipper: HillClipper(
-            centreHeight: 100,
-            curveHeight: 50.0,
-            peakHeight: 30.0,
-            peakWidth: 15.0 * 5 / 2,
-          ),
-          child: Container(
-            height: 100.0,
-            color: Colors.yellow,
-            child: Align(
-              alignment: Alignment(0.0, 1.0),
-              child: Opacity(
-                opacity: 1.0,
-                child: CircularProgress(
-                  progressCircleOpacity: 1.0,
-                  innerCircleRadius: 15.0,
-                  progressCircleBorderWidth: 0.0,
-                  progressCircleRadius: 0.0,
-                  progressPercent: 0.5,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
 
     final Widget child = NotificationListener<ScrollNotification>(
       key: _key,
@@ -629,43 +616,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         _mode == _RefreshIndicatorMode.refresh ||
             _mode == _RefreshIndicatorMode.done;
 
-//    Widget indi = Positioned(
-//      top: _isIndicatorAtTop ? 0.0 : null,
-//      bottom: !_isIndicatorAtTop ? 0.0 : null,
-//      left: 0.0,
-//      right: 0.0,
-//      child: SizeTransition(
-//        axisAlignment: _isIndicatorAtTop ? 1.0 : -1.0,
-//        sizeFactor: _positionFactor, // this is what brings it down
-//        child: Container(
-//          padding: _isIndicatorAtTop
-//              ? EdgeInsets.only(top: widget.displacement)
-//              : EdgeInsets.only(bottom: widget.displacement),
-//          alignment:
-//              _isIndicatorAtTop ? Alignment.topCenter : Alignment.bottomCenter,
-//          child: ScaleTransition(
-//            scale: _scaleFactor,
-//            child: AnimatedBuilder(
-//              animation: _positionController,
-//              builder: (BuildContext context, Widget child) {
-//                return RefreshProgressIndicator(
-//                  semanticsLabel: widget.semanticsLabel ??
-//                      MaterialLocalizations.of(context)
-//                          .refreshIndicatorSemanticLabel,
-//                  semanticsValue: widget.semanticsValue,
-//                  value: showIndeterminateIndicator ? null : _value.value,
-//                  valueColor: _valueColor,
-//                  backgroundColor: widget.backgroundColor,
-//                );
-//              },
-//            ),
-//          ),
-//        ),
-//      ),
-//    );
-
-    //Todo: make spring animation working.
-
     slivers.insert(
       0,
       SliverToBoxAdapter(
@@ -680,22 +630,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       ),
     );
 
-//    slivers.insert(
-//      0,
-//      SliverToBoxAdapter(
-//        child: AnimatedBuilder(
-//          animation: _value,
-//          builder: (BuildContext buildContext, Widget child) {
-//            return AnimatedContainer(
-//              listenable: _springAnimation,
-//              containerHeight: _value.value * 100.0 * 2,
-//            );
-//          },
-//        ),
-//      ),
-//    );
-
-//    slivers.insert(0, indi);
+    //TODO : constant distance -> variables
 
     return Stack(
       children: <Widget>[
@@ -706,7 +641,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               // -0.1 is done for elasticOut curve
               opacity: (_childOpacityAnimation.value - (1 / 3) - 0.1)
                   .clamp(0.0, 1.0),
-//              opacity: 1.0,
               child: NotificationListener<ScrollNotification>(
                 key: _key,
                 onNotification: _handleScrollNotification,
@@ -720,76 +654,70 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             );
           },
         ),
-        Opacity(
-          opacity: 1.0,
+        AnimatedBuilder(
+          animation: Listenable.merge([
+            _positionController,
+            _springController,
+            _showPeakController,
+          ]),
+          builder: (BuildContext buildContext, Widget child) {
+            return ClipPath(
+              clipper: HillClipper(
+                centreHeight: 100.0,
+                curveHeight: 50.0 * _springAnimation.value,
+                peakHeight: ((_peakHeightUpAnimation.value != 1.0)
+                    ? 30.0 * _peakHeightUpAnimation.value
+                    : 30.0 * _peakHeightDownAnimation.value),
+                peakWidth: (_peakHeightUpAnimation.value != 0.0 &&
+                        _peakHeightDownAnimation.value != 0.0)
+                    ? 15.0 * 5 / 2
+                    : 0.0,
+              ),
+              child: Container(
+                height: _value.value * 100.0 * 2,
+                color: Colors.red,
+              ),
+            );
+          },
+        ),
+        Container(
+          height: 100.0,
           child: AnimatedBuilder(
             animation: Listenable.merge([
-              _positionController,
-              _springController,
-              _showPeakController,
+              _progressingController,
+              _ringDisappearController,
+              _indicatorMoveWithPeakController,
+              _indicatorTranslateInOutController,
+              _radiusController,
             ]),
             builder: (BuildContext buildContext, Widget child) {
-              return ClipPath(
-                clipper: HillClipper(
-                  centreHeight: 100.0,
-                  curveHeight: 50.0 * _springAnimation.value,
-                  peakHeight: ((_peakHeightUpAnimation.value != 1.0)
-                      ? 30.0 * _peakHeightUpAnimation.value
-                      : 30.0 * _peakHeightDownAnimation.value),
-                  peakWidth: (_peakHeightUpAnimation.value != 0.0 &&
-                          _peakHeightDownAnimation.value != 0.0)
-                      ? 15.0 * 5 / 2
-                      : 0.0,
+              return Align(
+                alignment: Alignment(
+                  0.0,
+                  (1.0 -
+                      (0.36 * _indicatorTranslateWithPeakAnimation.value) -
+                      (0.64 * _indicatorTranslateAnimation.value)),
                 ),
-                child: Container(
-                  height: _value.value * 100.0 * 2,
-                  color: Colors.red,
+                child: Transform(
+                  transform: Matrix4.identity()
+                    ..rotateZ(_progressingRotateAnimation.value * 5 * pi / 6),
+                  alignment: FractionalOffset.center,
+                  child: CircularProgress(
+                    progressCircleOpacity: _ringOpacityAnimation.value,
+                    innerCircleRadius: 15.0 *
+                        ((_mode != _RefreshIndicatorMode.done)
+                            ? _indicatorRadiusWithPeakAnimation.value
+                            : _radiusAnimation.value),
+                    progressCircleBorderWidth: 2.0,
+                    progressCircleRadius: (_ringOpacityAnimation.value != 0.0)
+                        ? (19.0 + 1.0) * _ringRadiusAnimation.value
+                        : 0.0,
+                    startAngle: _progressingStartAngleAnimation.value * pi,
+                    progressPercent: _progressingPercentAnimation.value,
+                  ),
                 ),
               );
             },
-          ),
-        ),
-        Opacity(
-          opacity: 1.0,
-          child: Container(
-            height: 100.0,
-            child: AnimatedBuilder(
-              animation: Listenable.merge([
-                _progressingController,
-                _ringDisappearController,
-                _indicatorMoveWithPeakController,
-                _indicatorTranslateInOutController,
-                _radiusController,
-              ]),
-              builder: (BuildContext buildContext, Widget child) {
-                return Align(
-                  alignment: Alignment(
-                    0.0,
-                    (1.0 -
-                        (0.36 * _indicatorTranslateWithPeakAnimation.value) -
-                        (0.64 * _indicatorTranslateAnimation.value)),
-                  ),
-                  child: Transform(
-                    transform: Matrix4.identity()
-                      ..rotateZ(_progressingRotateAnimation.value * 5 * pi / 6),
-                    alignment: FractionalOffset.center,
-                    child: CircularProgress(
-                      progressCircleOpacity: _ringOpacityAnimation.value,
-                      innerCircleRadius: 15.0 *
-                          ((_mode != _RefreshIndicatorMode.done)
-                              ? _indicatorRadiusWithPeakAnimation.value
-                              : _radiusAnimation.value),
-                      progressCircleBorderWidth: 2.0,
-                      progressCircleRadius: (_ringOpacityAnimation.value != 0.0)
-                          ? (19.0 + 1.0) * _ringRadiusAnimation.value
-                          : 0.0,
-                      startAngle: _progressingStartAngleAnimation.value * pi,
-                      progressPercent: _progressingPercentAnimation.value,
-                    ),
-                  ),
-                );
-              },
-            ),
           ),
         ),
       ],
