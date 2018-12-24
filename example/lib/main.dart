@@ -74,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: LiquidPullToRefresh(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
+        color: Theme.of(context).accentColor,
         child: ListView.builder(
           padding: kMaterialListPadding,
           itemCount: _items.length,
