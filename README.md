@@ -69,7 +69,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 For adding this custom refresh indicator in your flutter app, you have to simply wrap *ListView*  or *GridView* inside `LiquidPullToRefresh`. Also you have provide the value of `onRefresh` parameter which is a refresh callback. 
 
-**Note - **`LiquidPullToRefresh` can only be used with a vertical scroll view.
+**Note -** `LiquidPullToRefresh` can only be used with a vertical scroll view.
 
 For example:
 
@@ -77,11 +77,11 @@ For example:
 LiquidPullToRefresh(
         key: _refreshIndicatorKey,	// key if you want to add
         onRefresh: _handleRefresh,	// refresh callback
-        child: ListView(),			// scroll view
+        child: ListView(),		// scroll view
       );
 ```
 
-If you do not want the opacity transition of child then set `showChildOpacityTransition: false`.  Preview regarding the both form of this widget is follows -
+If you do not want the opacity transition of child then set `showChildOpacityTransition: false`.  Preview regarding the both form of this widget is follows :-
 <div align="center">
 <table>
 <thead>
