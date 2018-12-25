@@ -1,7 +1,7 @@
-<div align="center"><img src="/display/cover.png"/></div>
+<div align="center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/cover.png?raw=true"/></div>
 
 # <div align="center">Liquid Pull To Refresh</div>
-<div align="center">A beautiful and custom refresh indicator highly inspired from <a src = "https://dribbble.com/shots/1797373-Pull-Down-To-Refresh">Ramotion Pull Down to Refresh</a> for flutter.</div><br>
+<div align="center"><p>A beautiful and custom refresh indicator for flutter highly inspired from <a href="https://dribbble.com/shots/1797373-Pull-Down-To-Refresh">Ramotion Pull Down to Refresh</a>.</p></div><br>
 
 <div align="center">
 	<a href="https://flutter.io">
@@ -92,8 +92,8 @@ If you do not want the opacity transition of child then set `showChildOpacityTra
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><img src="/display/liquid.gif" height = "500px"/></td>
-<td style="text-align:center"><img src="/display/liquid_false.gif" height = "500px"/></td>
+<td style="text-align:center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/liquid.gif?raw=true" height = "500px"/></td>
+<td style="text-align:center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/liquid_false.gif?raw=true" height = "500px"/></td>
 </tr>
 </tbody>
 </table>
