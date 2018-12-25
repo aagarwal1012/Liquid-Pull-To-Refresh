@@ -569,8 +569,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     double height = (widget.height != null) ? widget.height : _defaultHeight;
 
     // converting list items to slivers
-    // ignore: invalid_use_of_protected_member
     List<Widget> slivers =
+        // ignore: invalid_use_of_protected_member
         List.from(widget.child.buildSlivers(context), growable: true);
 
     //Code Added for testing
