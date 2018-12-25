@@ -570,8 +570,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
     // converting list items to slivers
     // ignore: invalid_use_of_protected_member
-    List<Widget> slivers = List.from(widget.child.buildSlivers(context),
-        growable: true);
+    List<Widget> slivers =
+        List.from(widget.child.buildSlivers(context), growable: true);
 
     //Code Added for testing
 //    slivers.insert(

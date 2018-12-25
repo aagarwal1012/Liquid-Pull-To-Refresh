@@ -72,8 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Stack(
           children: <Widget>[
-            Align(alignment: Alignment(-1.0, 0.0),child: Icon(Icons.reorder)),
-            Align(alignment: Alignment(-0.3, 0.0),child: Text(widget.title)),
+            Align(alignment: Alignment(-1.0, 0.0), child: Icon(Icons.reorder)),
+            Align(alignment: Alignment(-0.3, 0.0), child: Text(widget.title)),
           ],
         ),
       ),
