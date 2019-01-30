@@ -55,6 +55,7 @@ class LiquidPullToRefresh extends StatefulWidget {
     this.springAnimationDurationInMilliseconds = 1000,
     this.borderWidth = 2.0,
     this.showChildOpacityTransition = true,
+    this.scrollController,
   })  : assert(child != null),
         assert(onRefresh != null),
         assert(notificationPredicate != null),
@@ -109,6 +110,8 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// By default, checks whether `notification.depth == 0`. Set it to something
   /// else for more complicated layouts.
   final ScrollNotificationPredicate notificationPredicate;
+
+  final ScrollController scrollController;
 
   @override
   _LiquidPullToRefreshState createState() => _LiquidPullToRefreshState();
@@ -611,6 +614,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       child: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: _handleGlowNotification,
         child: CustomScrollView(
+          controller: widget.scrollController,
           slivers: slivers,
         ),
       ),
@@ -654,6 +658,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                 child: NotificationListener<OverscrollIndicatorNotification>(
                   onNotification: _handleGlowNotification,
                   child: CustomScrollView(
+                    controller: widget.scrollController,
                     slivers: slivers,
                   ),
                 ),
