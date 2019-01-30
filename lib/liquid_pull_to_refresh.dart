@@ -111,6 +111,8 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// else for more complicated layouts.
   final ScrollNotificationPredicate notificationPredicate;
 
+  /// Controls the [ScrollView] child.
+  /// [null] by default.
   final ScrollController scrollController;
 
   @override
