@@ -125,4 +125,4 @@ If you encounter any problems feel free to open an [issue](https://github.com/aa
 See [Contributing.md](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/CONTRIBUTING.md).
 
 # License
-Animated-Text-Kit is licensed under `MIT license`. View [license](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/LICENSE).
+Liquid-Pull-To-Refresh is licensed under `MIT license`. View [license](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/LICENSE).
