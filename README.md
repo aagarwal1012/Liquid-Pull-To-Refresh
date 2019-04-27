@@ -17,8 +17,15 @@
       alt="Build Status" />
   </a>
   	<a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-red.svg?style=flat-square"
+    <img src="https://img.shields.io/badge/License-MIT-red.svg"
       alt="License: MIT" />
+  </a>
+	
+	
+  </a>
+  	<a href="https://www.paypal.me/aagarwal1012">
+    <img src="https://img.shields.io/badge/Donate-PayPal-green.svg"
+      alt="Donate" />
   </a>
 </div><br>
 
@@ -123,6 +130,11 @@ For help on editing package code, view the [flutter documentation](https://flutt
 If you encounter any problems feel free to open an [issue](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/issues/new?template=bug_report.md). If you feel the library is missing a feature, please raise a [ticket](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/issues/new?template=feature_request.md) on GitHub and I'll look into it. Pull request are also welcome. 
 
 See [Contributing.md](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/CONTRIBUTING.md).
+
+# Donate
+> If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of :coffee:
+>
+> - [PayPal](https://www.paypal.me/aagarwal1012/)
 
 # License
 Liquid-Pull-To-Refresh is licensed under `MIT license`. View [license](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/LICENSE).
