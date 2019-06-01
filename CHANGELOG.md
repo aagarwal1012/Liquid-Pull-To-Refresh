@@ -1,4 +1,4 @@
-## 1.1.1
+## 1.1.2
 * Fixed the error with error reporting that occurs with newer versions of Flutter.
 
 ## 1.1.0
