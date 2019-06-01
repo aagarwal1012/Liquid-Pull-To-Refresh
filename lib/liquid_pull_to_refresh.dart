@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
 import 'package:liquid_pull_to_refresh/src/clipper.dart';
@@ -505,13 +506,25 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
         final Future<void> refreshResult = widget.onRefresh();
         assert(() {
-          if (refreshResult == null)
+          if (refreshResult == null) {
+            // See https://github.com/flutter/flutter/issues/31962#issuecomment-488882515
+            // Delete 
+            final bool _useDiagnosticsNode =
+                FlutterError('text') is Diagnosticable;
+
+            dynamic safeContext(String context) {
+              return _useDiagnosticsNode
+                  ? DiagnosticsNode.message(context)
+                  : context;
+            }
+
             FlutterError.reportError(FlutterErrorDetails(
               exception: FlutterError('The onRefresh callback returned null.\n'
                   'The LiquidPullToRefresh onRefresh callback must return a Future.'),
-              context: ErrorDescription('when calling onRefresh'),
+              context: safeContext('when calling onRefresh'),
               library: 'LiquidPullToRefresh library',
             ));
+          }
           return true;
         }());
 
