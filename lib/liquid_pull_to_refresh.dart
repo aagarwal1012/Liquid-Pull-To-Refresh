@@ -508,7 +508,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         assert(() {
           if (refreshResult == null) {
             // See https://github.com/flutter/flutter/issues/31962#issuecomment-488882515
-            // Delete
+            // Delete this code when the new context update reaches stable versions of Flutter.
             final bool _useDiagnosticsNode =
                 FlutterError('text') is Diagnosticable;
 
