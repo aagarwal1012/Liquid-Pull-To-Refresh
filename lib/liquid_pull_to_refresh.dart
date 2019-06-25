@@ -711,8 +711,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                     : 0.0,
               ),
               child: Container(
-                height: _value.value * height * 2, // 100.0
-                // color: color,
+                height: _value.value * height * 2, // 100.0 
                 decoration: decoration,
               ),
             );
