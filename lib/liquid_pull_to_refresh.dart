@@ -50,6 +50,7 @@ class LiquidPullToRefresh extends StatefulWidget {
     @required this.child,
     @required this.onRefresh,
     this.color,
+    this.decoration,
     this.backgroundColor,
     this.notificationPredicate = defaultScrollNotificationPredicate,
     this.height,
@@ -96,6 +97,10 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// far enough to demonstrate that they want the app to refresh. The returned
   /// [Future] must complete when the refresh operation is finished.
   final RefreshCallback onRefresh;
+
+  /// The progress indicator's foreground color. The current theme's
+  /// [Decoration] by default.
+  final Decoration decoration;
 
   /// The progress indicator's foreground color. The current theme's
   /// [ThemeData.accentColor] by default.
@@ -578,6 +583,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
     // assigning default height
     double _defaultHeight = 100.0;
+    // checking whether to take default values or not
+    Decoration decoration = (widget.decoration != null) ? widget.decoration : null;
 
     // checking whether to take default values or not
     Color color = (widget.color != null) ? widget.color : _defaultColor;
@@ -706,6 +713,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               child: Container(
                 height: _value.value * height * 2, // 100.0
                 color: color,
+                decoration: decoration,
               ),
             );
           },
