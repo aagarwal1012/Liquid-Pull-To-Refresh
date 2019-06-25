@@ -584,7 +584,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     // assigning default height
     double _defaultHeight = 100.0;
     // checking whether to take default values or not
-    Decoration decoration = (widget.decoration != null) ? widget.decoration : null;
+    Decoration decoration = widget.decoration ?? (widget.color != null ? BoxDecoration(color: widget.color) : null);
 
     // checking whether to take default values or not
     Color color = (widget.color != null) ? widget.color : _defaultColor;
