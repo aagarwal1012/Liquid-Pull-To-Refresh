@@ -17,14 +17,13 @@ matrix:
   allow_failures:
     - env: FLUTTER_VERSION=dev
     - env: FLUTTER_VERSION=beta
-before_script:
-  - cd ../
+install:
   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_VERSION
   - ./flutter/bin/flutter doctor
-  - cd Liquid-Pull-To-Refresh/
 script:
-  - ./../flutter/bin/flutter test
-  - ./../flutter/bin/flutter analyze .
-  - ./../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run lib/
-  - ./../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run test/
-  - ./../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run example/lib/
+  - cd Liquid-Pull-To-Refresh/
+  - ../flutter/bin/flutter test
+  - ../flutter/bin/flutter analyze .
+  - ../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run lib/
+  - ../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run test/
+  - ../flutter/bin/cache/dart-sdk/bin/dartfmt --dry-run example/lib/
