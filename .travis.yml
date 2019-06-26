@@ -18,6 +18,7 @@ matrix:
     - env: FLUTTER_VERSION=dev
     - env: FLUTTER_VERSION=beta
 install:
+  - cd ../
   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_VERSION
   - ./flutter/bin/flutter doctor
 script:
