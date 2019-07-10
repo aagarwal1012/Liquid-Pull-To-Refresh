@@ -16,12 +16,13 @@
     <img src="https://travis-ci.com/aagarwal1012/Liquid-Pull-To-Refresh.svg?token=pXLTRcXnVLpccbxqiWBi&branch=master"
       alt="Build Status" />
   </a>
+  <a href="https://codecov.io/gh/aagarwal1012/Liquid-Pull-To-Refresh">
+    <img src="https://codecov.io/gh/aagarwal1012/Liquid-Pull-To-Refresh/branch/master/graph/badge.svg"
+      alt="Codecov Coverage" />
+  </a>
   	<a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-red.svg"
       alt="License: MIT" />
-  </a>
-	
-	
   </a>
   	<a href="https://www.paypal.me/aagarwal1012">
     <img src="https://img.shields.io/badge/Donate-PayPal-green.svg"
