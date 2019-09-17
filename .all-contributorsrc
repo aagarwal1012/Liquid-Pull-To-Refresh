@@ -13,6 +13,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Taormina",
+      "name": "Anthony Taormina",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1090627?v=4",
+      "profile": "https://taormina.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
