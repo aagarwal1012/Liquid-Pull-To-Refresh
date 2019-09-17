@@ -1,6 +1,8 @@
-<div align="center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/cover.png?raw=true"/></div>  
+<div align="center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/cover.png?raw=true"/></div>
+
 # <div align="center">Liquid Pull To Refresh</div>
 <div align="center"><p>A beautiful and custom refresh indicator for flutter highly inspired from <a href="https://dribbble.com/shots/1797373-Pull-Down-To-Refresh">Ramotion Pull Down to Refresh</a>.</p></div><br>
+
 <div align="center">
 	<a href="https://flutter.io">
     <img src="https://img.shields.io/badge/Platform-Flutter-yellow.svg"
@@ -26,8 +28,6 @@
     <img src="https://img.shields.io/badge/Donate-PayPal-green.svg"
       alt="Donate" />
   </a>
-    <img src="https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square"
-      alt="All Contributors" />
 </div><br>
 
 # Table of contents
@@ -149,6 +149,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/opannapo"><img src="https://avatars0.githubusercontent.com/u/18698574?v=4" width="100px;" alt="opannapo"/><br /><sub><b>opannapo</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=opannapo" title="Code">💻</a></td>
     <td align="center"><a href="https://taormina.io"><img src="https://avatars1.githubusercontent.com/u/1090627?v=4" width="100px;" alt="Anthony Taormina"/><br /><sub><b>Anthony Taormina</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=Taormina" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://kekland.github.io"><img src="https://avatars0.githubusercontent.com/u/14993994?v=4" width="100px;" alt="Erzhan"/><br /><sub><b>Erzhan</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=kekland" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
