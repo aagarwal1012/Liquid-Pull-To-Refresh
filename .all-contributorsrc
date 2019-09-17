@@ -1,0 +1,23 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "aagarwal1012",
+      "name": "Ayush Agarwal",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/34043023?v=4",
+      "profile": "https://ayushagarwal.ml",
+      "contributions": [
+        "projectManagement"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Liquid-Pull-To-Refresh",
+  "projectOwner": "aagarwal1012",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
