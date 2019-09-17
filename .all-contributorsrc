@@ -1,0 +1,23 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "opannapo",
+      "name": "opannapo",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/18698574?v=4",
+      "profile": "https://github.com/opannapo",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Liquid-Pull-To-Refresh",
+  "projectOwner": "aagarwal1012",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
