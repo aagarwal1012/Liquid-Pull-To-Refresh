@@ -1,4 +1,5 @@
 <div align="center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/cover.png?raw=true"/></div>
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 # <div align="center">Liquid Pull To Refresh</div>
 <div align="center"><p>A beautiful and custom refresh indicator for flutter highly inspired from <a href="https://dribbble.com/shots/1797373-Pull-Down-To-Refresh">Ramotion Pull Down to Refresh</a>.</p></div><br>
@@ -139,3 +140,19 @@ See [Contributing.md](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blo
 
 # License
 Liquid-Pull-To-Refresh is licensed under `MIT license`. View [license](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/LICENSE).
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="http://kekland.github.io"><img src="https://avatars0.githubusercontent.com/u/14993994?v=4" width="100px;" alt="Erzhan"/><br /><sub><b>Erzhan</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=kekland" title="Tests">⚠️</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
