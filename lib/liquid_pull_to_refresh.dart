@@ -51,6 +51,7 @@ class LiquidPullToRefresh extends StatefulWidget {
     @required this.onRefresh,
     this.color,
     this.backgroundColor,
+    this.backgroundImage,
     this.notificationPredicate = defaultScrollNotificationPredicate,
     this.height,
     this.springAnimationDurationInMilliseconds = 1000,
@@ -104,6 +105,10 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// The progress indicator's background color. The current theme's
   /// [ThemeData.canvasColor] by default.
   final Color backgroundColor;
+
+  /// The progress indicator's background image.
+  /// [null] by default.
+  final ImageProvider backgroundImage;
 
   /// A check that specifies whether a [ScrollNotification] should be
   /// handled by this widget.
@@ -734,6 +739,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                   alignment: FractionalOffset.center,
                   child: CircularProgress(
                     backgroundColor: backgroundColor,
+                    backgroundImage: widget.backgroundImage,
                     progressCircleOpacity: _ringOpacityAnimation.value,
                     innerCircleRadius: height *
                         15 /

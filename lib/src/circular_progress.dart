@@ -10,6 +10,7 @@ class CircularProgress extends StatefulWidget {
   final double progressCircleRadius;
   final double progressCircleBorderWidth;
   final Color backgroundColor;
+  final ImageProvider backgroundImage;
   final double startAngle;
 
   const CircularProgress({
@@ -19,6 +20,7 @@ class CircularProgress extends StatefulWidget {
     this.progressCircleRadius,
     this.progressCircleBorderWidth,
     this.backgroundColor,
+    this.backgroundImage,
     this.progressCircleOpacity,
     this.startAngle,
   }) : super(key: key);
@@ -61,6 +63,12 @@ class _CircularProgressState extends State<CircularProgress> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: widget.backgroundColor,
+                image: widget.backgroundImage == null
+                    ? null
+                    : DecorationImage(
+                        fit: BoxFit.fill,
+                        image: widget.backgroundImage,
+                      ),
               ),
             ),
           )
