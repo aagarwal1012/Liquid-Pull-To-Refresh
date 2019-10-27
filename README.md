@@ -123,6 +123,7 @@ If you do not want the opacity transition of child then set `showChildOpacityTra
 | showChildOpacityTransition            | bool                        | Whether to show child opacity transition or not.             |         true          |
 | color                                 | Color                       | The progress indicator's foreground color.                   | ThemeData.accentColor |
 | backgroundColor                       | Color                       | The progress indicator's background color.                   | ThemeData.canvasColor |
+| backgroundImage                       | ImageProvider               | The progress indicator's background image.                   | null |
 | notificationPredicate                 | ScrollNotificationPredicate | A check that specifies whether a `ScrollNotification` should be handled by this widget. |         null          |
 | scrollController                      | ScrollController            | Controls the `ScrollView` child.                             |         null          |
 
