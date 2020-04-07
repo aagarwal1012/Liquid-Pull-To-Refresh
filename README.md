@@ -144,15 +144,19 @@ See [Contributing.md](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blo
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/opannapo"><img src="https://avatars0.githubusercontent.com/u/18698574?v=4" width="100px;" alt="opannapo"/><br /><sub><b>opannapo</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=opannapo" title="Code">💻</a></td>
-    <td align="center"><a href="https://taormina.io"><img src="https://avatars1.githubusercontent.com/u/1090627?v=4" width="100px;" alt="Anthony Taormina"/><br /><sub><b>Anthony Taormina</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=Taormina" title="Documentation">📖</a></td>
-    <td align="center"><a href="http://kekland.github.io"><img src="https://avatars0.githubusercontent.com/u/14993994?v=4" width="100px;" alt="Erzhan"/><br /><sub><b>Erzhan</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=kekland" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/opannapo"><img src="https://avatars0.githubusercontent.com/u/18698574?v=4" width="100px;" alt=""/><br /><sub><b>opannapo</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=opannapo" title="Code">💻</a></td>
+    <td align="center"><a href="https://taormina.io"><img src="https://avatars1.githubusercontent.com/u/1090627?v=4" width="100px;" alt=""/><br /><sub><b>Anthony Taormina</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=Taormina" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://kekland.github.io"><img src="https://avatars0.githubusercontent.com/u/14993994?v=4" width="100px;" alt=""/><br /><sub><b>Erzhan</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/commits?author=kekland" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://bigdadz-developer.web.app/"><img src="https://avatars1.githubusercontent.com/u/23566790?v=4" width="100px;" alt=""/><br /><sub><b>Puttipong Wongrak</b></sub></a><br /><a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/issues?q=author%3ABIGDADz" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome! See [Contributing.md](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/CONTRIBUTING.md).
