@@ -31,11 +31,21 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "BIGDADz",
+      "name": "Puttipong Wongrak",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/23566790?v=4",
+      "profile": "https://bigdadz-developer.web.app/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "Liquid-Pull-To-Refresh",
   "projectOwner": "aagarwal1012",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
