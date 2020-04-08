@@ -1,4 +1,7 @@
-## 1.1.1
+## 1.1.2
+* Minor bug fixes.
+
+ 1.1.1
 * Fixed the DiagnosticsNode error with error reporting that occurs with newer versions of Flutter.
 
 ## 1.1.0
