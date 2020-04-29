@@ -47,7 +47,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  liquid_pull_to_refresh: ^1.1.2
+  liquid_pull_to_refresh: ^1.2.0
 ```
 
 ### 2. Install it

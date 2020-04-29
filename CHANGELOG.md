@@ -1,3 +1,6 @@
+## 1.2.0
+* Now Liquid Pull to Refresh supports **any Widget** as its `child` widget.
+
 ## 1.1.2
 * Minor bug fixes.
 
