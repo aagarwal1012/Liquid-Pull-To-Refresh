@@ -34,10 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-      
+
   static int refreshNum = 10; // number that changes when refreshed
-  Stream<int> counterStream = Stream<int>.periodic(
-      Duration(seconds: 3), (x) => refreshNum);
+  Stream<int> counterStream =
+      Stream<int>.periodic(Duration(seconds: 3), (x) => refreshNum);
 
   static final List<String> _items = <String>[
     'A',
