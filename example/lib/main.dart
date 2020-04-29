@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -33,6 +34,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+
+  static int refreshNum = 10; // number that changes when refreshed
+  Stream<int> counterStream =
+      Stream<int>.periodic(Duration(seconds: 3), (x) => refreshNum);
+
   static final List<String> _items = <String>[
     'A',
     'B',
@@ -54,6 +60,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final Completer<void> completer = Completer<void>();
     Timer(const Duration(seconds: 3), () {
       completer.complete();
+    });
+    setState(() {
+      refreshNum = new Random().nextInt(100);
     });
     return completer.future.then<void>((_) {
       _scaffoldKey.currentState?.showSnackBar(SnackBar(
@@ -80,20 +89,24 @@ class _MyHomePageState extends State<MyHomePage> {
       body: LiquidPullToRefresh(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
-        child: ListView.builder(
-          padding: kMaterialListPadding,
-          itemCount: _items.length,
-          itemBuilder: (BuildContext context, int index) {
-            final String item = _items[index];
-            return ListTile(
-              isThreeLine: true,
-              leading: CircleAvatar(child: Text(item)),
-              title: Text('This item represents $item.'),
-              subtitle: const Text(
-                  'Even more additional list item information appears on line three.'),
-            );
-          },
-        ),
+        child: StreamBuilder<int>(
+            stream: counterStream,
+            builder: (context, snapshot) {
+              return ListView.builder(
+                padding: kMaterialListPadding,
+                itemCount: _items.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final String item = _items[index];
+                  return ListTile(
+                    isThreeLine: true,
+                    leading: CircleAvatar(child: Text(item)),
+                    title: Text('This item represents $item.'),
+                    subtitle: Text(
+                        'Even more additional list item information appears on line three. ${snapshot.data}'),
+                  );
+                },
+              );
+            }),
       ),
     );
   }
