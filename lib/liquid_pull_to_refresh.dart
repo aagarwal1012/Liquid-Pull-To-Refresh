@@ -68,7 +68,7 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// will appear when child's Scrollable descendant is over-scrolled.
   ///
   /// Typically a [ListView] or [CustomScrollView].
-  final ScrollView child;
+  final Widget child;
 
   /// The distance from the child's top or bottom edge to where the box
   /// will settle after the spring effect.
@@ -586,11 +586,6 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         : _defaultBackgroundColor;
     double height = (widget.height != null) ? widget.height : _defaultHeight;
 
-    // converting list items to slivers
-    List<Widget> slivers =
-        // ignore: invalid_use_of_protected_member
-        List.from(widget.child.buildSlivers(context), growable: true);
-
     //Code Added for testing
 //    slivers.insert(
 //      0,
@@ -627,12 +622,7 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       key: _key,
       onNotification: _handleScrollNotification,
       child: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: _handleGlowNotification,
-        child: CustomScrollView(
-          controller: widget.scrollController,
-          slivers: slivers,
-        ),
-      ),
+          onNotification: _handleGlowNotification, child: widget.child),
     );
     if (_mode == null) {
       assert(_dragOffset == null);
@@ -642,19 +632,19 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     assert(_dragOffset != null);
     assert(_isIndicatorAtTop != null);
 
-    slivers.insert(
-      0,
-      SliverToBoxAdapter(
-        child: AnimatedBuilder(
-          animation: _positionController,
-          builder: (BuildContext buildContext, Widget child) {
-            return Container(
-              height: _value.value * height * 2, //100.0
-            );
-          },
-        ),
-      ),
-    );
+    // slivers.insert(
+    //   0,
+    //   SliverToBoxAdapter(
+    //     child: AnimatedBuilder(
+    //       animation: _positionController,
+    //       builder: (BuildContext buildContext, Widget child) {
+    //         return Container(
+    //           height: _value.value * height * 2, //100.0
+    //         );
+    //       },
+    //     ),
+    //   ),
+    // );
 
     return Stack(
       children: <Widget>[
@@ -671,12 +661,8 @@ class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                 key: _key,
                 onNotification: _handleScrollNotification,
                 child: NotificationListener<OverscrollIndicatorNotification>(
-                  onNotification: _handleGlowNotification,
-                  child: CustomScrollView(
-                    controller: widget.scrollController,
-                    slivers: slivers,
-                  ),
-                ),
+                    onNotification: _handleGlowNotification,
+                    child: widget.child),
               ),
             );
           },
