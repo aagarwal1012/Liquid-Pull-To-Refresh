@@ -117,10 +117,10 @@ class LiquidPullToRefresh extends StatefulWidget {
   final ScrollController scrollController;
 
   @override
-  _LiquidPullToRefreshState createState() => _LiquidPullToRefreshState();
+  LiquidPullToRefreshState createState() => LiquidPullToRefreshState();
 }
 
-class _LiquidPullToRefreshState extends State<LiquidPullToRefresh>
+class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     with TickerProviderStateMixin<LiquidPullToRefresh> {
   AnimationController _springController;
   Animation<double> _springAnimation;
