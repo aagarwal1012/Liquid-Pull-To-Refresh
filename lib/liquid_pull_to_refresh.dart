@@ -624,6 +624,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       child: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: _handleGlowNotification, child: widget.child),
     );
+
     if (_mode == null) {
       assert(_dragOffset == null);
       assert(_isIndicatorAtTop == null);
@@ -632,38 +633,24 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     assert(_dragOffset != null);
     assert(_isIndicatorAtTop != null);
 
-    // slivers.insert(
-    //   0,
-    //   SliverToBoxAdapter(
-    //     child: AnimatedBuilder(
-    //       animation: _positionController,
-    //       builder: (BuildContext buildContext, Widget child) {
-    //         return Container(
-    //           height: _value.value * height * 2, //100.0
-    //         );
-    //       },
-    //     ),
-    //   ),
-    // );
-
     return Stack(
       children: <Widget>[
         AnimatedBuilder(
           animation: _positionController,
+          child: child,
           builder: (BuildContext buildContext, Widget child) {
-            return Opacity(
-              // -0.01 is done for elasticOut curve
-              opacity: (widget.showChildOpacityTransition)
-                  ? (_childOpacityAnimation.value - (1 / 3) - 0.01)
-                      .clamp(0.0, 1.0)
-                  : 1.0,
-              child: NotificationListener<ScrollNotification>(
-                key: _key,
-                onNotification: _handleScrollNotification,
-                child: NotificationListener<OverscrollIndicatorNotification>(
-                    onNotification: _handleGlowNotification,
-                    child: widget.child),
-              ),
+            if (widget.showChildOpacityTransition) {
+              return Opacity(
+                  // -0.01 is done for elasticOut curve
+                  opacity: (widget.showChildOpacityTransition)
+                      ? (_childOpacityAnimation.value - (1 / 3) - 0.01)
+                          .clamp(0.0, 1.0)
+                      : 1.0,
+                  child: child);
+            }
+            return Transform.translate(
+              offset: new Offset(0.0, _positionController.value * height * 1.5),
+              child: child,
             );
           },
         ),
