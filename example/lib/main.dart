@@ -39,6 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Stream<int> counterStream =
       Stream<int>.periodic(Duration(seconds: 3), (x) => refreshNum);
 
+  ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = new ScrollController();
+  }
+
   static final List<String> _items = <String>[
     'A',
     'B',
@@ -90,12 +98,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: LiquidPullToRefresh(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
+        showChildOpacityTransition: false,
+        scrollController: _scrollController,
         child: StreamBuilder<int>(
             stream: counterStream,
             builder: (context, snapshot) {
               return ListView.builder(
                 padding: kMaterialListPadding,
                 itemCount: _items.length,
+                controller: _scrollController,
                 itemBuilder: (BuildContext context, int index) {
                   final String item = _items[index];
                   return ListTile(
