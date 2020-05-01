@@ -19,7 +19,7 @@ const double _kDragSizeFactorLimit = 1.5;
 
 // When the scroll ends, the duration of the progress indicator's animation
 // to the LiquidPullToRefresh's displacement.
-const Duration _kIndicatorSnapDuration = Duration(milliseconds: 150);
+// const Duration _kIndicatorSnapDuration = Duration(milliseconds: 150);
 
 // The duration of the ScaleTransitionIn of box that starts when the
 // refresh action has completed.
@@ -47,19 +47,18 @@ enum _LiquidPullToRefreshMode {
 class LiquidPullToRefresh extends StatefulWidget {
   const LiquidPullToRefresh({
     Key key,
+    this.animSpeedFactor = 1.0,
     @required this.child,
     @required this.onRefresh,
     this.color,
     this.backgroundColor,
-    this.notificationPredicate = defaultScrollNotificationPredicate,
     this.height,
     this.springAnimationDurationInMilliseconds = 1000,
     this.borderWidth = 2.0,
     this.showChildOpacityTransition = true,
-    this.scrollController,
   })  : assert(child != null),
         assert(onRefresh != null),
-        assert(notificationPredicate != null),
+        assert(animSpeedFactor > 1.0),
         super(key: key);
 
   /// The widget below this widget in the tree.
@@ -81,6 +80,12 @@ class LiquidPullToRefresh extends StatefulWidget {
   ///
   /// default to 1000
   final int springAnimationDurationInMilliseconds;
+
+  /// To regulate the "speed of the animation" towards the end.
+  /// To hasten it give a value > 1.0 and vice versa.
+  ///
+  /// default to 1.0
+  final double animSpeedFactor;
 
   /// Border width of progressing circle in Progressing Indicator
   ///
@@ -104,17 +109,6 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// The progress indicator's background color. The current theme's
   /// [ThemeData.canvasColor] by default.
   final Color backgroundColor;
-
-  /// A check that specifies whether a [ScrollNotification] should be
-  /// handled by this widget.
-  ///
-  /// By default, checks whether `notification.depth == 0`. Set it to something
-  /// else for more complicated layouts.
-  final ScrollNotificationPredicate notificationPredicate;
-
-  /// Controls the [ScrollView] child.
-  /// [null] by default.
-  final ScrollController scrollController;
 
   @override
   LiquidPullToRefreshState createState() => LiquidPullToRefreshState();
@@ -262,7 +256,6 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    if (!widget.notificationPredicate(notification)) return false;
     if (notification is ScrollStartNotification &&
         notification.metrics.extentBefore == 0.0 &&
         _mode == null &&
@@ -356,43 +349,54 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         // progress ring disappear animation
         _ringDisappearController.animateTo(1.0,
             duration: Duration(
-                milliseconds: widget.springAnimationDurationInMilliseconds),
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        widget.animSpeedFactor)
+                    .round()),
             curve: Curves.linear);
 
         // indicator translate out
         _indicatorMoveWithPeakController.animateTo(0.0,
             duration: Duration(
-                milliseconds: widget.springAnimationDurationInMilliseconds),
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        widget.animSpeedFactor)
+                    .round()),
             curve: Curves.linear);
         _indicatorTranslateInOutController.animateTo(0.0,
             duration: Duration(
-                milliseconds: widget.springAnimationDurationInMilliseconds),
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        widget.animSpeedFactor)
+                    .round()),
             curve: Curves.linear);
 
         //initial value of controller is 1.0
         await _showPeakController.animateTo(0.3,
             duration: Duration(
-                milliseconds:
-                    (widget.springAnimationDurationInMilliseconds).round()),
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        widget.animSpeedFactor)
+                    .round()),
             curve: Curves.linear);
 
         _radiusController.animateTo(0.0,
             duration: Duration(
-                milliseconds:
-                    (widget.springAnimationDurationInMilliseconds / 5).round()),
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        (widget.animSpeedFactor * 5))
+                    .round()),
             curve: Curves.linear);
 
         _showPeakController.value = 0.175;
         await _showPeakController.animateTo(0.1,
             duration: Duration(
-                milliseconds:
-                    (widget.springAnimationDurationInMilliseconds / 5).round()),
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        (widget.animSpeedFactor * 5))
+                    .round()),
             curve: Curves.easeOut);
         _showPeakController.value = 0.0;
 
         await _positionController.animateTo(0.0,
             duration: Duration(
-                milliseconds: _kIndicatorSnapDuration.inMilliseconds * 2));
+                milliseconds: (widget.springAnimationDurationInMilliseconds /
+                        widget.animSpeedFactor)
+                    .round()));
         break;
 
       case _LiquidPullToRefreshMode.canceled:
