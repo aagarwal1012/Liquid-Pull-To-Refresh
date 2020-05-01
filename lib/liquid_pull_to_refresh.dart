@@ -58,7 +58,7 @@ class LiquidPullToRefresh extends StatefulWidget {
     this.showChildOpacityTransition = true,
   })  : assert(child != null),
         assert(onRefresh != null),
-        assert(animSpeedFactor > 1.0),
+        assert(animSpeedFactor >= 1.0),
         super(key: key);
 
   /// The widget below this widget in the tree.
