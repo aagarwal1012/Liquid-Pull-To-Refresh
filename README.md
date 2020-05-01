@@ -113,18 +113,17 @@ If you do not want the opacity transition of child then set `showChildOpacityTra
 
 ### LiquidPullToRefresh Class
 
-| Dart attribute                        | Datatype                    | Description                                                  |     Default Value     |
-| :------------------------------------ | :-------------------------- | :----------------------------------------------------------- | :-------------------: |
-| child                                 | ScrollView                  | The widget below this widget in the tree.                    |       @required       |
-| onRefresh                             | RefreshCallback             | A function that's called when the refreshing of page takes place. |       @required       |
-| height                                | double                      | The distance from the child's top or bottom edge to where the box will settle after the spring effect. |         100.0         |
-| springAnimationDurationInMilliseconds | int                         | Duration in milliseconds of springy effect that occurs when we leave dragging after full drag. |         1000          |
-| borderWidth                           | double                      | Border width of progressing circle in Progressing Indicator. |          2.0          |
-| showChildOpacityTransition            | bool                        | Whether to show child opacity transition or not.             |         true          |
-| color                                 | Color                       | The progress indicator's foreground color.                   | ThemeData.accentColor |
-| backgroundColor                       | Color                       | The progress indicator's background color.                   | ThemeData.canvasColor |
-| notificationPredicate                 | ScrollNotificationPredicate | A check that specifies whether a `ScrollNotification` should be handled by this widget. |         null          |
-| scrollController                      | ScrollController            | Controls the `ScrollView` child.                             |         null          |
+| Dart attribute                        | Datatype        | Description                                                                                            |     Default Value     |
+| :------------------------------------ | :-------------- | :----------------------------------------------------------------------------------------------------- | :-------------------: |
+| child                                 | ScrollView      | The widget below this widget in the tree.                                                              |       @required       |
+| onRefresh                             | RefreshCallback | A function that's called when the refreshing of page takes place.                                      |       @required       |
+| height                                | double          | The distance from the child's top or bottom edge to where the box will settle after the spring effect. |         100.0         |
+| springAnimationDurationInMilliseconds | int             | Duration in milliseconds of springy effect that occurs when we leave dragging after full drag.         |         1000          |
+| borderWidth                           | double          | Border width of progressing circle in Progressing Indicator.                                           |          2.0          |
+| showChildOpacityTransition            | bool            | Whether to show child opacity transition or not.                                                       |         true          |
+| color                                 | Color           | The progress indicator's foreground color.                                                             | ThemeData.accentColor |
+| backgroundColor                       | Color           | The progress indicator's background color.                                                             | ThemeData.canvasColor |
+| animSpeedFactor                       | double          | Controls the speed of the animation after refresh. Used to hasten the ending animation.                |          1.0          |
 
 For help on editing package code, view the [flutter documentation](https://flutter.io/developing-packages/).
 
