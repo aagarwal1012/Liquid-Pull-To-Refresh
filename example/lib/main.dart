@@ -99,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         showChildOpacityTransition: false,
-        scrollController: _scrollController,
         child: StreamBuilder<int>(
             stream: counterStream,
             builder: (context, snapshot) {
