@@ -1,3 +1,18 @@
+## 2.0.0
+**Breaking Changes**
+
+* Now Liquid Pull to Refresh supports any Widget as its `child` widget.
+* Removed `notificationPredicate` and `scrollController` parameters.
+
+**Enhancements**
+
+* New parameter -- `animSpeedFactor` -- Controls the speed of the animation after refresh. Used to fasten the ending animation. [#33](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/issues/33)
+
+**Issues Fixed**
+
+* Refresh indicator overlays on list view. [#46](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/issues/46)
+* Cannot trigger refresh programmatically using the global key. The method 'show' was called on null. [#37](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/issues/37)
+
 ## 1.2.0
 * Now Liquid Pull to Refresh supports **any Widget** as its `child` widget.
 

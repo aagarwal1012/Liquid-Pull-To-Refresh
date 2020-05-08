@@ -47,7 +47,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  liquid_pull_to_refresh: ^1.2.0
+  liquid_pull_to_refresh: ^2.0.0
 ```
 
 ### 2. Install it
@@ -123,7 +123,7 @@ If you do not want the opacity transition of child then set `showChildOpacityTra
 | showChildOpacityTransition            | bool            | Whether to show child opacity transition or not.                                                       |         true          |
 | color                                 | Color           | The progress indicator's foreground color.                                                             | ThemeData.accentColor |
 | backgroundColor                       | Color           | The progress indicator's background color.                                                             | ThemeData.canvasColor |
-| animSpeedFactor                       | double          | Controls the speed of the animation after refresh. Used to hasten the ending animation.                |          1.0          |
+| animSpeedFactor                       | double          | Controls the speed of the animation after refresh. Used to fasten the ending animation.                |          1.0          |
 
 For help on editing package code, view the [flutter documentation](https://flutter.io/developing-packages/).
 
