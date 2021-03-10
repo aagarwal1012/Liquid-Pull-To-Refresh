@@ -46,10 +46,10 @@ enum _LiquidPullToRefreshMode {
 
 class LiquidPullToRefresh extends StatefulWidget {
   const LiquidPullToRefresh({
-    Key key,
+    Key? key,
     this.animSpeedFactor = 1.0,
-    @required this.child,
-    @required this.onRefresh,
+    required this.child,
+    required this.onRefresh,
     this.color,
     this.backgroundColor,
     this.height,
@@ -73,7 +73,7 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// will settle after the spring effect.
   ///
   /// default is set to 100.0
-  final double height;
+  final double? height;
 
   /// Duration in milliseconds of springy effect that occurs when
   /// we leave dragging after full drag.
@@ -104,11 +104,11 @@ class LiquidPullToRefresh extends StatefulWidget {
 
   /// The progress indicator's foreground color. The current theme's
   /// [ThemeData.accentColor] by default.
-  final Color color;
+  final Color? color;
 
   /// The progress indicator's background color. The current theme's
   /// [ThemeData.canvasColor] by default.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   @override
   LiquidPullToRefreshState createState() => LiquidPullToRefreshState();
@@ -116,42 +116,42 @@ class LiquidPullToRefresh extends StatefulWidget {
 
 class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     with TickerProviderStateMixin<LiquidPullToRefresh> {
-  AnimationController _springController;
-  Animation<double> _springAnimation;
+  late AnimationController _springController;
+  late Animation<double> _springAnimation;
 
-  AnimationController _progressingController;
-  Animation<double> _progressingRotateAnimation;
-  Animation<double> _progressingPercentAnimation;
-  Animation<double> _progressingStartAngleAnimation;
+  late AnimationController _progressingController;
+  late Animation<double> _progressingRotateAnimation;
+  late Animation<double> _progressingPercentAnimation;
+  late Animation<double> _progressingStartAngleAnimation;
 
-  AnimationController _ringDisappearController;
-  Animation<double> _ringRadiusAnimation;
-  Animation<double> _ringOpacityAnimation;
+  late AnimationController _ringDisappearController;
+  late Animation<double> _ringRadiusAnimation;
+  late Animation<double> _ringOpacityAnimation;
 
-  AnimationController _showPeakController;
-  Animation<double> _peakHeightUpAnimation;
-  Animation<double> _peakHeightDownAnimation;
+  late AnimationController _showPeakController;
+  late Animation<double> _peakHeightUpAnimation;
+  late Animation<double> _peakHeightDownAnimation;
 
-  AnimationController _indicatorMoveWithPeakController;
-  Animation<double> _indicatorTranslateWithPeakAnimation;
-  Animation<double> _indicatorRadiusWithPeakAnimation;
+  late AnimationController _indicatorMoveWithPeakController;
+  late Animation<double> _indicatorTranslateWithPeakAnimation;
+  late Animation<double> _indicatorRadiusWithPeakAnimation;
 
-  AnimationController _indicatorTranslateInOutController;
-  Animation<double> _indicatorTranslateAnimation;
+  late AnimationController _indicatorTranslateInOutController;
+  late Animation<double> _indicatorTranslateAnimation;
 
-  AnimationController _radiusController;
-  Animation<double> _radiusAnimation;
+  late AnimationController _radiusController;
+  late Animation<double> _radiusAnimation;
 
-  Animation<double> _childOpacityAnimation;
+  late Animation<double> _childOpacityAnimation;
 
-  AnimationController _positionController;
-  Animation<double> _value;
-  Animation<Color> _valueColor;
+  late AnimationController _positionController;
+  late Animation<double> _value;
+  late Animation<Color?> _valueColor;
 
-  _LiquidPullToRefreshMode _mode;
-  Future<void> _pendingRefreshFuture;
-  bool _isIndicatorAtTop;
-  double _dragOffset;
+  _LiquidPullToRefreshMode? _mode;
+  Future<void>? _pendingRefreshFuture;
+  bool? _isIndicatorAtTop;
+  double? _dragOffset;
 
   static final Animatable<double> _threeQuarterTween =
       Tween<double>(begin: 0.0, end: 0.75);
@@ -265,7 +265,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
       });
       return false;
     }
-    bool indicatorAtTopNow;
+    bool? indicatorAtTopNow;
     switch (notification.metrics.axisDirection) {
       case AxisDirection.down:
         indicatorAtTopNow = true;
@@ -288,7 +288,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         if (notification.metrics.extentBefore > 0.0) {
           _dismiss(_LiquidPullToRefreshMode.canceled);
         } else {
-          _dragOffset -= notification.scrollDelta;
+          if (_dragOffset != null) _dragOffset = _dragOffset! - notification.scrollDelta!;
           _checkDragOffset(notification.metrics.viewportDimension);
         }
       }
@@ -302,7 +302,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     } else if (notification is OverscrollNotification) {
       if (_mode == _LiquidPullToRefreshMode.drag ||
           _mode == _LiquidPullToRefreshMode.armed) {
-        _dragOffset -= notification.overscroll / 2.0;
+        if (_dragOffset != null) _dragOffset = _dragOffset! - notification.overscroll / 2.0;
         _checkDragOffset(notification.metrics.viewportDimension);
       }
     } else if (notification is ScrollEndNotification) {
@@ -448,13 +448,13 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     assert(_mode == _LiquidPullToRefreshMode.drag ||
         _mode == _LiquidPullToRefreshMode.armed);
     double newValue =
-        _dragOffset / (containerExtent * _kDragContainerExtentPercentage);
+        _dragOffset! / (containerExtent * _kDragContainerExtentPercentage);
     if (_mode == _LiquidPullToRefreshMode.armed)
       newValue = math.max(newValue, 1.0 / _kDragSizeFactorLimit);
     _positionController.value =
         newValue.clamp(0.0, 1.0); // this triggers various rebuilds
     if (_mode == _LiquidPullToRefreshMode.drag &&
-        _valueColor.value.alpha == 0xFF) _mode = _LiquidPullToRefreshMode.armed;
+        _valueColor.value!.alpha == 0xFF) _mode = _LiquidPullToRefreshMode.armed;
   }
 
   void _show() {
@@ -561,7 +561,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   /// When initiated in this manner, the progress indicator is independent of any
   /// actual scroll view. It defaults to showing the indicator at the top. To
   /// show it at the bottom, set `atTop` to false.
-  Future<void> show({bool atTop = true}) {
+  Future<void>? show({bool atTop = true}) {
     if (_mode != _LiquidPullToRefreshMode.refresh &&
         _mode != _LiquidPullToRefreshMode.snap) {
       if (_mode == null) _start(atTop ? AxisDirection.down : AxisDirection.up);
@@ -584,11 +584,11 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     double _defaultHeight = 100.0;
 
     // checking whether to take default values or not
-    Color color = (widget.color != null) ? widget.color : _defaultColor;
+    Color color = (widget.color != null) ? widget.color! : _defaultColor;
     Color backgroundColor = (widget.backgroundColor != null)
-        ? widget.backgroundColor
+        ? widget.backgroundColor!
         : _defaultBackgroundColor;
-    double height = (widget.height != null) ? widget.height : _defaultHeight;
+    double height = (widget.height != null) ? widget.height! : _defaultHeight;
 
     //Code Added for testing
 //    slivers.insert(
@@ -642,7 +642,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         AnimatedBuilder(
           animation: _positionController,
           child: child,
-          builder: (BuildContext buildContext, Widget child) {
+          builder: (BuildContext buildContext, Widget? child) {
             if (widget.showChildOpacityTransition) {
               return Opacity(
                   // -0.01 is done for elasticOut curve
@@ -664,7 +664,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             _springController,
             _showPeakController,
           ]),
-          builder: (BuildContext buildContext, Widget child) {
+          builder: (BuildContext buildContext, Widget? child) {
             return ClipPath(
               clipper: CurveHillClipper(
                 centreHeight: height,
@@ -697,7 +697,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               _indicatorTranslateInOutController,
               _radiusController,
             ]),
-            builder: (BuildContext buildContext, Widget child) {
+            builder: (BuildContext buildContext, Widget? child) {
               return Align(
                 alignment: Alignment(
                   0.0,

@@ -8,10 +8,10 @@ class CurveHillClipper extends CustomClipper<Path> {
   final double peakWidth;
 
   CurveHillClipper({
-    this.centreHeight,
-    this.curveHeight,
-    this.peakHeight,
-    this.peakWidth,
+    required this.centreHeight,
+    required this.curveHeight,
+    required this.peakHeight,
+    required this.peakWidth,
   });
 
   @override
