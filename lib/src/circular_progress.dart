@@ -13,14 +13,14 @@ class CircularProgress extends StatefulWidget {
   final double startAngle;
 
   const CircularProgress({
-    Key key,
-    this.innerCircleRadius,
-    this.progressPercent,
-    this.progressCircleRadius,
-    this.progressCircleBorderWidth,
-    this.backgroundColor,
-    this.progressCircleOpacity,
-    this.startAngle,
+    Key? key,
+    required this.innerCircleRadius,
+    required this.progressPercent,
+    required this.progressCircleRadius,
+    required this.progressCircleBorderWidth,
+    required this.backgroundColor,
+    required this.progressCircleOpacity,
+    required this.startAngle,
   }) : super(key: key);
 
   @override
@@ -91,10 +91,10 @@ class RingPainter extends CustomPainter {
   final double startAngle;
 
   RingPainter({
-    this.startAngle,
-    this.paintWidth,
-    this.progressPercent,
-    this.trackColor,
+    required this.startAngle,
+    required this.paintWidth,
+    required this.progressPercent,
+    required this.trackColor,
   }) : trackPaint = Paint()
           ..color = trackColor
           ..style = PaintingStyle.stroke

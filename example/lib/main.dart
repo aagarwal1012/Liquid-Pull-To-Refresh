@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Stream<int> counterStream =
       Stream<int>.periodic(Duration(seconds: 3), (x) => refreshNum);
 
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
           action: SnackBarAction(
               label: 'RETRY',
               onPressed: () {
-                _refreshIndicatorKey.currentState.show();
+                _refreshIndicatorKey.currentState!.show();
               })));
     });
   }
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Stack(
           children: <Widget>[
             Align(alignment: Alignment(-1.0, 0.0), child: Icon(Icons.reorder)),
-            Align(alignment: Alignment(-0.3, 0.0), child: Text(widget.title)),
+            Align(alignment: Alignment(-0.3, 0.0), child: Text(widget.title!)),
           ],
         ),
       ),
