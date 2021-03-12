@@ -1,3 +1,6 @@
+## 3.0.0
+* Added Null Safety to the package.
+
 ## 2.0.0
 **Breaking Changes**
 
