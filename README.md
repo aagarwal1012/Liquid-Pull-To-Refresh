@@ -121,7 +121,7 @@ If you do not want the opacity transition of child then set `showChildOpacityTra
 | springAnimationDurationInMilliseconds | int             | Duration in milliseconds of springy effect that occurs when we leave dragging after full drag.         |         1000          |
 | borderWidth                           | double          | Border width of progressing circle in Progressing Indicator.                                           |          2.0          |
 | showChildOpacityTransition            | bool            | Whether to show child opacity transition or not.                                                       |         true          |
-| color                                 | Color           | The progress indicator's foreground color.                                                             | ThemeData.accentColor |
+| color                                 | Color           | The progress indicator's foreground color.                                                             | ColorScheme.secondary |
 | backgroundColor                       | Color           | The progress indicator's background color.                                                             | ThemeData.canvasColor |
 | animSpeedFactor                       | double          | Controls the speed of the animation after refresh. Used to fasten the ending animation.                |          1.0          |
 
