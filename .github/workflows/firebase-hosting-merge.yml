@@ -22,3 +22,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LIQUID_PULL_TO_REFRESH }}'
           channelId: live
           projectId: liquid-pull-to-refresh
+          entryPoint: "./example"

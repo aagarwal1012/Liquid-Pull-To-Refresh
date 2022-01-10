@@ -1,3 +1,7 @@
+## 3.0.1
+* Fixed Deprecated Methods that are no longer used.
+* General code cleanup.
+
 ## 3.0.0
 * Added Null Safety to the package.
 
