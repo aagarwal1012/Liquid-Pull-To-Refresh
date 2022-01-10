@@ -59,6 +59,16 @@
         "platform",
         "maintenance"
       ]
+    },
+    {
+      "login": "RemcoSchrijver",
+      "name": "Remco Schrijver",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45097990?v=4",
+      "profile": "https://github.com/RemcoSchrijver",
+      "contributions": [
+        "platform",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
