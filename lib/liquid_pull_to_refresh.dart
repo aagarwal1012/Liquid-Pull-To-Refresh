@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/src/circular_progress.dart';
 import 'package:liquid_pull_to_refresh/src/clipper.dart';
@@ -56,9 +55,7 @@ class LiquidPullToRefresh extends StatefulWidget {
     this.springAnimationDurationInMilliseconds = 1000,
     this.borderWidth = 2.0,
     this.showChildOpacityTransition = true,
-  })  : assert(child != null),
-        assert(onRefresh != null),
-        assert(animSpeedFactor >= 1.0),
+  })  : assert(animSpeedFactor >= 1.0),
         super(key: key);
 
   /// The widget below this widget in the tree.
@@ -234,8 +231,10 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     final ThemeData theme = Theme.of(context);
     _valueColor = _positionController.drive(
       ColorTween(
-              begin: (widget.color ?? theme.colorScheme.secondary).withOpacity(0.0),
-              end: (widget.color ?? theme.colorScheme.secondary).withOpacity(1.0))
+              begin: (widget.color ?? theme.colorScheme.secondary)
+                  .withOpacity(0.0),
+              end: (widget.color ?? theme.colorScheme.secondary)
+                  .withOpacity(1.0))
           .chain(CurveTween(
               curve: const Interval(0.0, 1.0 / _kDragSizeFactorLimit))),
     );
@@ -288,7 +287,8 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         if (notification.metrics.extentBefore > 0.0) {
           _dismiss(_LiquidPullToRefreshMode.canceled);
         } else {
-          if (_dragOffset != null) _dragOffset = _dragOffset! - notification.scrollDelta!;
+          if (_dragOffset != null)
+            _dragOffset = _dragOffset! - notification.scrollDelta!;
           _checkDragOffset(notification.metrics.viewportDimension);
         }
       }
@@ -302,7 +302,8 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     } else if (notification is OverscrollNotification) {
       if (_mode == _LiquidPullToRefreshMode.drag ||
           _mode == _LiquidPullToRefreshMode.armed) {
-        if (_dragOffset != null) _dragOffset = _dragOffset! - notification.overscroll / 2.0;
+        if (_dragOffset != null)
+          _dragOffset = _dragOffset! - notification.overscroll / 2.0;
         _checkDragOffset(notification.metrics.viewportDimension);
       }
     } else if (notification is ScrollEndNotification) {
@@ -324,7 +325,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   bool _handleGlowNotification(OverscrollIndicatorNotification notification) {
     if (notification.depth != 0 || !notification.leading) return false;
     if (_mode == _LiquidPullToRefreshMode.drag) {
-      notification.disallowGlow();
+      notification.disallowIndicator();
       return true;
     }
     return false;
@@ -454,7 +455,8 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _positionController.value =
         newValue.clamp(0.0, 1.0); // this triggers various rebuilds
     if (_mode == _LiquidPullToRefreshMode.drag &&
-        _valueColor.value!.alpha == 0xFF) _mode = _LiquidPullToRefreshMode.armed;
+        _valueColor.value!.alpha == 0xFF)
+      _mode = _LiquidPullToRefreshMode.armed;
   }
 
   void _show() {
@@ -498,8 +500,6 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
             curve: Curves.elasticOut)
         .then<void>((void value) {
       if (mounted && _mode == _LiquidPullToRefreshMode.snap) {
-        assert(widget.onRefresh != null);
-
         setState(() {
           // Show the indeterminate progress indicator.
           _mode = _LiquidPullToRefreshMode.refresh;
@@ -509,30 +509,6 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         _progressingController..repeat();
 
         final Future<void> refreshResult = widget.onRefresh();
-        assert(() {
-          if (refreshResult == null) {
-            // See https://github.com/flutter/flutter/issues/31962#issuecomment-488882515
-            // Delete this code when the new context update reaches stable versions of Flutter.
-            final bool _useDiagnosticsNode =
-                FlutterError('text') is Diagnosticable;
-
-            dynamic safeContext(String context) {
-              return _useDiagnosticsNode
-                  ? DiagnosticsNode.message(context)
-                  : context;
-            }
-
-            FlutterError.reportError(FlutterErrorDetails(
-              exception: FlutterError('The onRefresh callback returned null.\n'
-                  'The LiquidPullToRefresh onRefresh callback must return a Future.'),
-              context: safeContext('when calling onRefresh'),
-              library: 'LiquidPullToRefresh library',
-            ));
-          }
-          return true;
-        }());
-
-        if (refreshResult == null) return;
 
         refreshResult.whenComplete(() {
           if (mounted && _mode == _LiquidPullToRefreshMode.refresh) {
@@ -589,38 +565,6 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         ? widget.backgroundColor!
         : _defaultBackgroundColor;
     double height = (widget.height != null) ? widget.height! : _defaultHeight;
-
-    //Code Added for testing
-//    slivers.insert(
-//      0,
-//      SliverToBoxAdapter(
-//        child: ClipPath(
-//          clipper: HillClipper(
-//            centreHeight: 100,
-//            curveHeight: 50.0,
-//            peakHeight: 30.0,
-//            peakWidth: 15.0 * 5 / 2,
-//          ),
-//          child: Container(
-//            height: 100.0,
-//            color: Colors.yellow,
-//            child: Align(
-//              alignment: Alignment(0.0, 1.0),
-//              child: Opacity(
-//                opacity: 1.0,
-//                child: CircularProgress(
-//                  progressCircleOpacity: 1.0,
-//                  innerCircleRadius: 15.0,
-//                  progressCircleBorderWidth: 0.0,
-//                  progressCircleRadius: 0.0,
-//                  progressPercent: 0.5,
-//                ),
-//              ),
-//            ),
-//          ),
-//        ),
-//      ),
-//    );
 
     final Widget child = NotificationListener<ScrollNotification>(
       key: _key,
