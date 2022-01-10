@@ -73,13 +73,17 @@ class _MyHomePageState extends State<MyHomePage> {
       refreshNum = new Random().nextInt(100);
     });
     return completer.future.then<void>((_) {
-      _scaffoldKey.currentState?.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(_scaffoldKey.currentState!.context).showSnackBar(
+        SnackBar(
           content: const Text('Refresh complete'),
           action: SnackBarAction(
-              label: 'RETRY',
-              onPressed: () {
-                _refreshIndicatorKey.currentState!.show();
-              })));
+            label: 'RETRY',
+            onPressed: () {
+              _refreshIndicatorKey.currentState!.show();
+            },
+          ),
+        ),
+      );
     });
   }
 
