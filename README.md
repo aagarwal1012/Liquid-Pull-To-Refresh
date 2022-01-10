@@ -1,7 +1,7 @@
 <div align="center"><img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/blob/master/display/cover.png?raw=true"/></div>
 
 # <div align="center">Liquid Pull To Refresh</div>
-<div align="center"><p>A beautiful and custom refresh indicator for flutter highly inspired from <a href="https://dribbble.com/shots/1797373-Pull-Down-To-Refresh">Ramotion Pull Down to Refresh</a>.</p></div><br>
+<div align="center"><p>A beautiful and custom refresh indicator for flutter highly inspired from <a href="https://dribbble.com/shots/1797373-Pull-Down-To-Refresh">Ramotion Pull Down to Refresh</a>. Try out our <a href="https://liquid-pull-to-refresh.web.app/">live example app</a>.</p></div><br>
 
 <div align="center">
 	<a href="https://flutter.io">
@@ -12,9 +12,9 @@
     <img src="https://img.shields.io/pub/v/liquid_pull_to_refresh.svg"
       alt="Pub Package" />
   </a>
-  	<a href="https://travis-ci.com/aagarwal1012/Liquid-Pull-To-Refresh">
-    <img src="https://travis-ci.com/aagarwal1012/Liquid-Pull-To-Refresh.svg?token=pXLTRcXnVLpccbxqiWBi&branch=master"
-      alt="Build Status" />
+  	<a href="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/actions/workflows/main.yml">
+    <img src="https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/actions/workflows/main.yml/badge.svg"
+      alt="CI" />
   </a>
   <a href="https://codecov.io/gh/aagarwal1012/Liquid-Pull-To-Refresh">
     <img src="https://codecov.io/gh/aagarwal1012/Liquid-Pull-To-Refresh/branch/master/graph/badge.svg"
