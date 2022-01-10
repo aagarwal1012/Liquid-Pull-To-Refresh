@@ -17,64 +17,39 @@ class CurveHillClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = new Path();
-    if (peakHeight == null && peakWidth == null) {
-      if (size.height > centreHeight) {
-        if (curveHeight > (size.height - centreHeight)) {
-          curveHeight = size.height - centreHeight;
-        }
-
-        path.lineTo(0.0, centreHeight);
-
-        path.quadraticBezierTo(size.width / 4, centreHeight + curveHeight,
-            size.width / 2, centreHeight + curveHeight);
-
-        path.quadraticBezierTo(size.width * 3 / 4, centreHeight + curveHeight,
-            size.width, centreHeight);
-
-        path.lineTo(size.width, 0.0);
-
-        path.lineTo(0.0, 0.0);
-      } else {
-        path.lineTo(0.0, size.height);
-        path.lineTo(size.width, size.height);
-        path.lineTo(size.width, 0.0);
-        path.lineTo(0.0, 0.0);
+    if (size.height >= centreHeight) {
+      if (curveHeight > (size.height - centreHeight)) {
+        curveHeight = size.height - centreHeight;
       }
+
+      path.lineTo(0.0, centreHeight);
+
+      path.quadraticBezierTo(size.width / 4, centreHeight + curveHeight,
+          (size.width / 2) - (peakWidth / 2), centreHeight + curveHeight);
+
+      path.quadraticBezierTo(
+          (size.width / 2) - (peakWidth / 4),
+          centreHeight + curveHeight - peakHeight,
+          (size.width / 2),
+          centreHeight + curveHeight - peakHeight);
+
+      path.quadraticBezierTo(
+          (size.width / 2) + (peakWidth / 4),
+          centreHeight + curveHeight - peakHeight,
+          (size.width / 2) + (peakWidth / 2),
+          centreHeight + curveHeight);
+
+      path.quadraticBezierTo(size.width * 3 / 4, centreHeight + curveHeight,
+          size.width, centreHeight);
+
+      path.lineTo(size.width, 0.0);
+
+      path.lineTo(0.0, 0.0);
     } else {
-      if (size.height >= centreHeight) {
-        if (curveHeight > (size.height - centreHeight)) {
-          curveHeight = size.height - centreHeight;
-        }
-
-        path.lineTo(0.0, centreHeight);
-
-        path.quadraticBezierTo(size.width / 4, centreHeight + curveHeight,
-            (size.width / 2) - (peakWidth / 2), centreHeight + curveHeight);
-
-        path.quadraticBezierTo(
-            (size.width / 2) - (peakWidth / 4),
-            centreHeight + curveHeight - peakHeight,
-            (size.width / 2),
-            centreHeight + curveHeight - peakHeight);
-
-        path.quadraticBezierTo(
-            (size.width / 2) + (peakWidth / 4),
-            centreHeight + curveHeight - peakHeight,
-            (size.width / 2) + (peakWidth / 2),
-            centreHeight + curveHeight);
-
-        path.quadraticBezierTo(size.width * 3 / 4, centreHeight + curveHeight,
-            size.width, centreHeight);
-
-        path.lineTo(size.width, 0.0);
-
-        path.lineTo(0.0, 0.0);
-      } else {
-        path.lineTo(0.0, size.height);
-        path.lineTo(size.width, size.height);
-        path.lineTo(size.width, 0.0);
-        path.lineTo(0.0, 0.0);
-      }
+      path.lineTo(0.0, size.height);
+      path.lineTo(size.width, size.height);
+      path.lineTo(size.width, 0.0);
+      path.lineTo(0.0, 0.0);
     }
 
     return path;

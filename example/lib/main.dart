@@ -4,9 +4,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -16,13 +18,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Liquid Pull To Refresh'),
+      home: const MyHomePage(title: 'Liquid Pull To Refresh'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  const MyHomePage({Key? key, this.title}) : super(key: key);
 
   final String? title;
 
@@ -37,14 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static int refreshNum = 10; // number that changes when refreshed
   Stream<int> counterStream =
-      Stream<int>.periodic(Duration(seconds: 3), (x) => refreshNum);
+      Stream<int>.periodic(const Duration(seconds: 3), (x) => refreshNum);
 
   ScrollController? _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = new ScrollController();
+    _scrollController = ScrollController();
   }
 
   static final List<String> _items = <String>[
@@ -70,16 +72,20 @@ class _MyHomePageState extends State<MyHomePage> {
       completer.complete();
     });
     setState(() {
-      refreshNum = new Random().nextInt(100);
+      refreshNum = Random().nextInt(100);
     });
     return completer.future.then<void>((_) {
-      _scaffoldKey.currentState?.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(_scaffoldKey.currentState!.context).showSnackBar(
+        SnackBar(
           content: const Text('Refresh complete'),
           action: SnackBarAction(
-              label: 'RETRY',
-              onPressed: () {
-                _refreshIndicatorKey.currentState!.show();
-              })));
+            label: 'RETRY',
+            onPressed: () {
+              _refreshIndicatorKey.currentState!.show();
+            },
+          ),
+        ),
+      );
     });
   }
 
@@ -90,8 +96,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Stack(
           children: <Widget>[
-            Align(alignment: Alignment(-1.0, 0.0), child: Icon(Icons.reorder)),
-            Align(alignment: Alignment(-0.3, 0.0), child: Text(widget.title!)),
+            const Align(
+              alignment: Alignment(-1.0, 0.0),
+              child: Icon(Icons.reorder),
+            ),
+            Align(
+              alignment: const Alignment(-0.3, 0.0),
+              child: Text(widget.title!),
+            ),
           ],
         ),
       ),
@@ -100,24 +112,25 @@ class _MyHomePageState extends State<MyHomePage> {
         onRefresh: _handleRefresh,
         showChildOpacityTransition: false,
         child: StreamBuilder<int>(
-            stream: counterStream,
-            builder: (context, snapshot) {
-              return ListView.builder(
-                padding: kMaterialListPadding,
-                itemCount: _items.length,
-                controller: _scrollController,
-                itemBuilder: (BuildContext context, int index) {
-                  final String item = _items[index];
-                  return ListTile(
-                    isThreeLine: true,
-                    leading: CircleAvatar(child: Text(item)),
-                    title: Text('This item represents $item.'),
-                    subtitle: Text(
-                        'Even more additional list item information appears on line three. ${snapshot.data}'),
-                  );
-                },
-              );
-            }),
+          stream: counterStream,
+          builder: (context, snapshot) {
+            return ListView.builder(
+              padding: kMaterialListPadding,
+              itemCount: _items.length,
+              controller: _scrollController,
+              itemBuilder: (BuildContext context, int index) {
+                final String item = _items[index];
+                return ListTile(
+                  isThreeLine: true,
+                  leading: CircleAvatar(child: Text(item)),
+                  title: Text('This item represents $item.'),
+                  subtitle: Text(
+                      'Even more additional list item information appears on line three. ${snapshot.data}'),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
