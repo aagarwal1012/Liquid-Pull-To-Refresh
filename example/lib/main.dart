@@ -108,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: LiquidPullToRefresh(
+        showDroplet: false,
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         showChildOpacityTransition: false,
