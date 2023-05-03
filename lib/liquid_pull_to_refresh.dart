@@ -44,18 +44,20 @@ enum _LiquidPullToRefreshMode {
 }
 
 class LiquidPullToRefresh extends StatefulWidget {
-  const LiquidPullToRefresh({
-    Key? key,
-    this.animSpeedFactor = 1.0,
-    required this.child,
-    required this.onRefresh,
-    this.color,
-    this.backgroundColor,
-    this.height,
-    this.springAnimationDurationInMilliseconds = 1000,
-    this.borderWidth = 2.0,
-    this.showChildOpacityTransition = true,
-  })  : assert(animSpeedFactor >= 1.0),
+  const LiquidPullToRefresh(
+      {Key? key,
+      this.animSpeedFactor = 1.0,
+      required this.child,
+      required this.onRefresh,
+      this.color,
+      this.backgroundColor,
+      this.height,
+      this.springAnimationDurationInMilliseconds = 1000,
+      this.borderWidth = 2.0,
+      this.showChildOpacityTransition = true,
+      this.showDroplet = true,
+      this.loaderWidget})
+      : assert(animSpeedFactor >= 1.0),
         super(key: key);
 
   /// The widget below this widget in the tree.
@@ -106,6 +108,12 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// The progress indicator's background color. The current theme's
   /// [ThemeData.canvasColor] by default.
   final Color? backgroundColor;
+
+  /// show the animated droplet, the default is true
+  final bool showDroplet;
+
+  /// the default is a container with the specified color
+  final Widget? loaderWidget;
 
   @override
   LiquidPullToRefreshState createState() => LiquidPullToRefreshState();
@@ -596,6 +604,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                       : 1.0,
                   child: child);
             }
+
             return Transform.translate(
               offset: new Offset(0.0, _positionController.value * height * 1.5),
               child: child,
@@ -613,7 +622,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               clipper: CurveHillClipper(
                 centreHeight: height,
                 curveHeight: height / 2 * _springAnimation.value, // 50.0
-                peakHeight: height *
+                peakHeight: (widget.showDroplet ? height : 0) *
                     3 /
                     10 *
                     ((_peakHeightUpAnimation.value != 1.0) //30.0
@@ -649,28 +658,37 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                       (0.36 * _indicatorTranslateWithPeakAnimation.value) -
                       (0.64 * _indicatorTranslateAnimation.value)),
                 ),
-                child: Transform(
-                  transform: Matrix4.identity()
-                    ..rotateZ(_progressingRotateAnimation.value * 5 * pi / 6),
-                  alignment: FractionalOffset.center,
-                  child: CircularProgress(
-                    backgroundColor: backgroundColor,
-                    progressCircleOpacity: _ringOpacityAnimation.value,
-                    innerCircleRadius: height *
-                        15 /
-                        100 * // 15.0
-                        ((_mode != _LiquidPullToRefreshMode.done)
-                            ? _indicatorRadiusWithPeakAnimation.value
-                            : _radiusAnimation.value),
-                    progressCircleBorderWidth: widget.borderWidth,
-                    //2.0
-                    progressCircleRadius: (_ringOpacityAnimation.value != 0.0)
-                        ? (height * 2 / 10) * _ringRadiusAnimation.value //20.0
-                        : 0.0,
-                    startAngle: _progressingStartAngleAnimation.value * pi,
-                    progressPercent: _progressingPercentAnimation.value,
-                  ),
-                ),
+                child: widget.loaderWidget != null
+                    ? Opacity(
+                        opacity: _indicatorMoveWithPeakController.value,
+                        child: widget.loaderWidget,
+                      )
+                    : Transform(
+                        transform: Matrix4.identity()
+                          ..rotateZ(
+                              _progressingRotateAnimation.value * 5 * pi / 6),
+                        alignment: FractionalOffset.center,
+                        child: CircularProgress(
+                          backgroundColor: backgroundColor,
+                          progressCircleOpacity: _ringOpacityAnimation.value,
+                          innerCircleRadius: height *
+                              15 /
+                              100 * // 15.0
+                              ((_mode != _LiquidPullToRefreshMode.done)
+                                  ? _indicatorRadiusWithPeakAnimation.value
+                                  : _radiusAnimation.value),
+                          progressCircleBorderWidth: widget.borderWidth,
+                          //2.0
+                          progressCircleRadius:
+                              (_ringOpacityAnimation.value != 0.0)
+                                  ? (height * 2 / 10) *
+                                      _ringRadiusAnimation.value //20.0
+                                  : 0.0,
+                          startAngle:
+                              _progressingStartAngleAnimation.value * pi,
+                          progressPercent: _progressingPercentAnimation.value,
+                        ),
+                      ),
               );
             },
           ),
