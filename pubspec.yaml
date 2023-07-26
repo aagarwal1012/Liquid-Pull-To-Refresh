@@ -1,6 +1,6 @@
 name: liquid_pull_to_refresh
 description: A beautiful and custom refresh indicator with some cool animations and transitions for flutter.
-version: 3.0.1
+version: 3.0.2
 homepage: https://github.com/aagarwal1012/Liquid-Pull-To-Refresh/
 
 environment:

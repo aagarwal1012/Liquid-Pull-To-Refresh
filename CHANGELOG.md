@@ -1,3 +1,6 @@
+## 3.0.2
+* Add borderRadius and gradient for the back container
+
 ## 3.0.1
 * Fixed Deprecated Methods that are no longer used.
 * General code cleanup.
