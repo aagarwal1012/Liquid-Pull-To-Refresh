@@ -38,8 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
       GlobalKey<LiquidPullToRefreshState>();
 
   static int refreshNum = 10; // number that changes when refreshed
-  Stream<int> counterStream =
-      Stream<int>.periodic(const Duration(seconds: 3), (x) => refreshNum);
+  Stream<int> counterStream = Stream<int>.periodic(const Duration(seconds: 3), (x) => refreshNum);
 
   ScrollController? _scrollController;
 
@@ -111,6 +110,17 @@ class _MyHomePageState extends State<MyHomePage> {
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         showChildOpacityTransition: false,
+        borderRadius: BorderRadius.circular(50),
+        springAnimationDurationInMilliseconds: 100,
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.6, 0.9],
+          colors: [
+            Colors.transparent,
+            Colors.red,
+          ],
+        ),
         child: StreamBuilder<int>(
           stream: counterStream,
           builder: (context, snapshot) {
