@@ -49,6 +49,8 @@ class LiquidPullToRefresh extends StatefulWidget {
     this.animSpeedFactor = 1.0,
     required this.child,
     required this.onRefresh,
+    this.borderRadius,
+    this.gradient,
     this.color,
     this.backgroundColor,
     this.height,
@@ -107,6 +109,14 @@ class LiquidPullToRefresh extends StatefulWidget {
   /// [ThemeData.canvasColor] by default.
   final Color? backgroundColor;
 
+  /// The progress indicator's background borderRadius.
+  ///  Its null by default
+  final BorderRadiusGeometry? borderRadius;
+
+  /// The progress indicator's background gradient.
+  ///  Its null by default
+  final Gradient? gradient;
+
   @override
   LiquidPullToRefreshState createState() => LiquidPullToRefreshState();
 }
@@ -150,27 +160,22 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   bool? _isIndicatorAtTop;
   double? _dragOffset;
 
-  static final Animatable<double> _threeQuarterTween =
-      Tween<double>(begin: 0.0, end: 0.75);
-  static final Animatable<double> _oneToZeroTween =
-      Tween<double>(begin: 1.0, end: 0.0);
+  static final Animatable<double> _threeQuarterTween = Tween<double>(begin: 0.0, end: 0.75);
+  static final Animatable<double> _oneToZeroTween = Tween<double>(begin: 1.0, end: 0.0);
 
   @override
   void initState() {
     super.initState();
     _springController = AnimationController(vsync: this);
-    _springAnimation =
-        _springController.drive(Tween<double>(begin: 1.0, end: -1.0));
+    _springAnimation = _springController.drive(Tween<double>(begin: 1.0, end: -1.0));
 
-    _progressingController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
-    _progressingRotateAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    _progressingController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
+    _progressingRotateAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
       parent: _progressingController,
       curve: Interval(0.0, 1.0),
     ));
-    _progressingPercentAnimation =
-        Tween<double>(begin: 0.25, end: 5 / 6).animate(CurvedAnimation(
+    _progressingPercentAnimation = Tween<double>(begin: 0.25, end: 5 / 6).animate(CurvedAnimation(
       parent: _progressingController,
       curve: Interval(0.0, 1.0, curve: ProgressRingCurve()),
     ));
@@ -181,44 +186,34 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     ));
 
     _ringDisappearController = AnimationController(vsync: this);
-    _ringRadiusAnimation = Tween<double>(begin: 1.0, end: 1.25).animate(
-        CurvedAnimation(
-            parent: _ringDisappearController,
-            curve: Interval(0.0, 0.2, curve: Curves.easeOut)));
-    _ringOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-        CurvedAnimation(
-            parent: _ringDisappearController,
-            curve: Interval(0.0, 0.2, curve: Curves.easeIn)));
+    _ringRadiusAnimation = Tween<double>(begin: 1.0, end: 1.25).animate(CurvedAnimation(
+        parent: _ringDisappearController, curve: Interval(0.0, 0.2, curve: Curves.easeOut)));
+    _ringOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+        parent: _ringDisappearController, curve: Interval(0.0, 0.2, curve: Curves.easeIn)));
 
     _showPeakController = AnimationController(vsync: this);
-    _peakHeightUpAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: _showPeakController,
-            curve: Interval(0.1, 0.2, curve: Curves.easeOut)));
-    _peakHeightDownAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-        CurvedAnimation(
-            parent: _showPeakController,
-            curve: Interval(0.2, 0.3, curve: Curves.easeIn)));
+    _peakHeightUpAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: _showPeakController, curve: Interval(0.1, 0.2, curve: Curves.easeOut)));
+    _peakHeightDownAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+        parent: _showPeakController, curve: Interval(0.2, 0.3, curve: Curves.easeIn)));
 
     _indicatorMoveWithPeakController = AnimationController(vsync: this);
-    _indicatorTranslateWithPeakAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(
+    _indicatorTranslateWithPeakAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
             parent: _indicatorMoveWithPeakController,
             curve: Interval(0.1, 0.2, curve: Curves.easeOut)));
-    _indicatorRadiusWithPeakAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(
-            parent: _indicatorMoveWithPeakController,
-            curve: Interval(0.1, 0.2, curve: Curves.easeOut)));
+    _indicatorRadiusWithPeakAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: _indicatorMoveWithPeakController,
+        curve: Interval(0.1, 0.2, curve: Curves.easeOut)));
 
     _indicatorTranslateInOutController = AnimationController(vsync: this);
-    _indicatorTranslateAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: _indicatorTranslateInOutController,
-            curve: Interval(0.2, 0.6, curve: Curves.easeOut)));
+    _indicatorTranslateAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: _indicatorTranslateInOutController,
+        curve: Interval(0.2, 0.6, curve: Curves.easeOut)));
 
     _radiusController = AnimationController(vsync: this);
-    _radiusAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _radiusController, curve: Curves.easeIn));
+    _radiusAnimation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _radiusController, curve: Curves.easeIn));
 
     _positionController = AnimationController(vsync: this);
     _value = _positionController.drive(_threeQuarterTween);
@@ -231,12 +226,9 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     final ThemeData theme = Theme.of(context);
     _valueColor = _positionController.drive(
       ColorTween(
-              begin: (widget.color ?? theme.colorScheme.secondary)
-                  .withOpacity(0.0),
-              end: (widget.color ?? theme.colorScheme.secondary)
-                  .withOpacity(1.0))
-          .chain(CurveTween(
-              curve: const Interval(0.0, 1.0 / _kDragSizeFactorLimit))),
+              begin: (widget.color ?? theme.colorScheme.secondary).withOpacity(0.0),
+              end: (widget.color ?? theme.colorScheme.secondary).withOpacity(1.0))
+          .chain(CurveTween(curve: const Interval(0.0, 1.0 / _kDragSizeFactorLimit))),
     );
     super.didChangeDependencies();
   }
@@ -278,32 +270,26 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         break;
     }
     if (indicatorAtTopNow != _isIndicatorAtTop) {
-      if (_mode == _LiquidPullToRefreshMode.drag ||
-          _mode == _LiquidPullToRefreshMode.armed)
+      if (_mode == _LiquidPullToRefreshMode.drag || _mode == _LiquidPullToRefreshMode.armed)
         _dismiss(_LiquidPullToRefreshMode.canceled);
     } else if (notification is ScrollUpdateNotification) {
-      if (_mode == _LiquidPullToRefreshMode.drag ||
-          _mode == _LiquidPullToRefreshMode.armed) {
+      if (_mode == _LiquidPullToRefreshMode.drag || _mode == _LiquidPullToRefreshMode.armed) {
         if (notification.metrics.extentBefore > 0.0) {
           _dismiss(_LiquidPullToRefreshMode.canceled);
         } else {
-          if (_dragOffset != null)
-            _dragOffset = _dragOffset! - notification.scrollDelta!;
+          if (_dragOffset != null) _dragOffset = _dragOffset! - notification.scrollDelta!;
           _checkDragOffset(notification.metrics.viewportDimension);
         }
       }
-      if (_mode == _LiquidPullToRefreshMode.armed &&
-          notification.dragDetails == null) {
+      if (_mode == _LiquidPullToRefreshMode.armed && notification.dragDetails == null) {
         // On iOS start the refresh when the Scrollable bounces back from the
         // OverScroll (ScrollNotification indicating this don't have dragDetails
         // because the scroll activity is not directly triggered by a drag).
         _show();
       }
     } else if (notification is OverscrollNotification) {
-      if (_mode == _LiquidPullToRefreshMode.drag ||
-          _mode == _LiquidPullToRefreshMode.armed) {
-        if (_dragOffset != null)
-          _dragOffset = _dragOffset! - notification.overscroll / 2.0;
+      if (_mode == _LiquidPullToRefreshMode.drag || _mode == _LiquidPullToRefreshMode.armed) {
+        if (_dragOffset != null) _dragOffset = _dragOffset! - notification.overscroll / 2.0;
         _checkDragOffset(notification.metrics.viewportDimension);
       }
     } else if (notification is ScrollEndNotification) {
@@ -337,8 +323,8 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     // This can only be called from _show() when refreshing and
     // _handleScrollNotification in response to a ScrollEndNotification or
     // direction change.
-    assert(newMode == _LiquidPullToRefreshMode.canceled ||
-        newMode == _LiquidPullToRefreshMode.done);
+    assert(
+        newMode == _LiquidPullToRefreshMode.canceled || newMode == _LiquidPullToRefreshMode.done);
     setState(() {
       _mode = newMode;
     });
@@ -350,59 +336,58 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
         // progress ring disappear animation
         _ringDisappearController.animateTo(1.0,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        widget.animSpeedFactor)
-                    .round()),
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / widget.animSpeedFactor)
+                        .round()),
             curve: Curves.linear);
 
         // indicator translate out
         _indicatorMoveWithPeakController.animateTo(0.0,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        widget.animSpeedFactor)
-                    .round()),
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / widget.animSpeedFactor)
+                        .round()),
             curve: Curves.linear);
         _indicatorTranslateInOutController.animateTo(0.0,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        widget.animSpeedFactor)
-                    .round()),
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / widget.animSpeedFactor)
+                        .round()),
             curve: Curves.linear);
 
         //initial value of controller is 1.0
         await _showPeakController.animateTo(0.3,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        widget.animSpeedFactor)
-                    .round()),
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / widget.animSpeedFactor)
+                        .round()),
             curve: Curves.linear);
 
         _radiusController.animateTo(0.0,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        (widget.animSpeedFactor * 5))
-                    .round()),
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / (widget.animSpeedFactor * 5))
+                        .round()),
             curve: Curves.linear);
 
         _showPeakController.value = 0.175;
         await _showPeakController.animateTo(0.1,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        (widget.animSpeedFactor * 5))
-                    .round()),
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / (widget.animSpeedFactor * 5))
+                        .round()),
             curve: Curves.easeOut);
         _showPeakController.value = 0.0;
 
         await _positionController.animateTo(0.0,
             duration: Duration(
-                milliseconds: (widget.springAnimationDurationInMilliseconds /
-                        widget.animSpeedFactor)
-                    .round()));
+                milliseconds:
+                    (widget.springAnimationDurationInMilliseconds / widget.animSpeedFactor)
+                        .round()));
         break;
 
       case _LiquidPullToRefreshMode.canceled:
-        await _positionController.animateTo(0.0,
-            duration: _kIndicatorScaleDuration);
+        await _positionController.animateTo(0.0, duration: _kIndicatorScaleDuration);
         break;
       default:
         assert(false);
@@ -446,16 +431,12 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   }
 
   void _checkDragOffset(double containerExtent) {
-    assert(_mode == _LiquidPullToRefreshMode.drag ||
-        _mode == _LiquidPullToRefreshMode.armed);
-    double newValue =
-        _dragOffset! / (containerExtent * _kDragContainerExtentPercentage);
+    assert(_mode == _LiquidPullToRefreshMode.drag || _mode == _LiquidPullToRefreshMode.armed);
+    double newValue = _dragOffset! / (containerExtent * _kDragContainerExtentPercentage);
     if (_mode == _LiquidPullToRefreshMode.armed)
       newValue = math.max(newValue, 1.0 / _kDragSizeFactorLimit);
-    _positionController.value =
-        newValue.clamp(0.0, 1.0); // this triggers various rebuilds
-    if (_mode == _LiquidPullToRefreshMode.drag &&
-        _valueColor.value!.alpha == 0xFF)
+    _positionController.value = newValue.clamp(0.0, 1.0); // this triggers various rebuilds
+    if (_mode == _LiquidPullToRefreshMode.drag && _valueColor.value!.alpha == 0xFF)
       _mode = _LiquidPullToRefreshMode.armed;
   }
 
@@ -467,36 +448,30 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
     _mode = _LiquidPullToRefreshMode.snap;
 
     _positionController.animateTo(1.0 / _kDragSizeFactorLimit,
-        duration: Duration(
-            milliseconds: widget.springAnimationDurationInMilliseconds),
+        duration: Duration(milliseconds: widget.springAnimationDurationInMilliseconds),
         curve: Curves.linear);
 
     _showPeakController.animateTo(1.0,
-        duration: Duration(
-            milliseconds: widget.springAnimationDurationInMilliseconds),
+        duration: Duration(milliseconds: widget.springAnimationDurationInMilliseconds),
         curve: Curves.linear);
 
     //indicator translate in with peak
     _indicatorMoveWithPeakController.animateTo(1.0,
-        duration: Duration(
-            milliseconds: widget.springAnimationDurationInMilliseconds),
+        duration: Duration(milliseconds: widget.springAnimationDurationInMilliseconds),
         curve: Curves.linear);
 
     //indicator move to center
     _indicatorTranslateInOutController.animateTo(1.0,
-        duration: Duration(
-            milliseconds: widget.springAnimationDurationInMilliseconds),
+        duration: Duration(milliseconds: widget.springAnimationDurationInMilliseconds),
         curve: Curves.linear);
 
     // progress ring fade in
     _ringDisappearController.animateTo(0.0,
-        duration: Duration(
-            milliseconds: widget.springAnimationDurationInMilliseconds));
+        duration: Duration(milliseconds: widget.springAnimationDurationInMilliseconds));
 
     _springController
         .animateTo(0.5,
-            duration: Duration(
-                milliseconds: widget.springAnimationDurationInMilliseconds),
+            duration: Duration(milliseconds: widget.springAnimationDurationInMilliseconds),
             curve: Curves.elasticOut)
         .then<void>((void value) {
       if (mounted && _mode == _LiquidPullToRefreshMode.snap) {
@@ -538,8 +513,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
   /// actual scroll view. It defaults to showing the indicator at the top. To
   /// show it at the bottom, set `atTop` to false.
   Future<void>? show({bool atTop = true}) {
-    if (_mode != _LiquidPullToRefreshMode.refresh &&
-        _mode != _LiquidPullToRefreshMode.snap) {
+    if (_mode != _LiquidPullToRefreshMode.refresh && _mode != _LiquidPullToRefreshMode.snap) {
       if (_mode == null) _start(atTop ? AxisDirection.down : AxisDirection.up);
       _show();
     }
@@ -561,9 +535,8 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
 
     // checking whether to take default values or not
     Color color = (widget.color != null) ? widget.color! : _defaultColor;
-    Color backgroundColor = (widget.backgroundColor != null)
-        ? widget.backgroundColor!
-        : _defaultBackgroundColor;
+    Color backgroundColor =
+        (widget.backgroundColor != null) ? widget.backgroundColor! : _defaultBackgroundColor;
     double height = (widget.height != null) ? widget.height! : _defaultHeight;
 
     final Widget child = NotificationListener<ScrollNotification>(
@@ -591,8 +564,7 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
               return Opacity(
                   // -0.01 is done for elasticOut curve
                   opacity: (widget.showChildOpacityTransition)
-                      ? (_childOpacityAnimation.value - (1 / 3) - 0.01)
-                          .clamp(0.0, 1.0)
+                      ? (_childOpacityAnimation.value - (1 / 3) - 0.01).clamp(0.0, 1.0)
                       : 1.0,
                   child: child);
             }
@@ -619,14 +591,18 @@ class LiquidPullToRefreshState extends State<LiquidPullToRefresh>
                     ((_peakHeightUpAnimation.value != 1.0) //30.0
                         ? _peakHeightUpAnimation.value
                         : _peakHeightDownAnimation.value),
-                peakWidth: (_peakHeightUpAnimation.value != 0.0 &&
-                        _peakHeightDownAnimation.value != 0.0)
-                    ? height * 35 / 100 //35.0
-                    : 0.0,
+                peakWidth:
+                    (_peakHeightUpAnimation.value != 0.0 && _peakHeightDownAnimation.value != 0.0)
+                        ? height * 35 / 100 //35.0
+                        : 0.0,
               ),
               child: Container(
                 height: _value.value * height * 2, // 100.0
-                color: color,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: widget.borderRadius,
+                  gradient: widget.gradient,
+                ),
               ),
             );
           },
